@@ -1,0 +1,262 @@
+2017-03-23 21:35:58 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+CREATE TABLE patron (
+   userID int, 
+   itemLimit int,
+
+   FOREIGN KEY (userID) REFERENCES patron (id)
+) [42122-193]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.table.Table.getColumn(Table.java:682)
+	at org.h2.table.IndexColumn.mapColumns(IndexColumn.java:74)
+	at org.h2.command.ddl.AlterTableAddConstraint.tryUpdate(AlterTableAddConstraint.java:223)
+	at org.h2.command.ddl.AlterTableAddConstraint.update(AlterTableAddConstraint.java:77)
+	at org.h2.command.ddl.CreateTable.update(CreateTable.java:176)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:98)
+	at org.h2.command.Command.executeUpdate(Command.java:258)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:184)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:158)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1380)
+	at org.h2.server.web.WebApp.query(WebApp.java:1053)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1015)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1002)
+	at org.h2.server.web.WebThread.process(WebThread.java:164)
+	at org.h2.server.web.WebThread.run(WebThread.java:89)
+	at java.lang.Thread.run(Unknown Source)
+2017-03-23 21:36:35 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE LIBRARIAN (
+   USERID INT, 
+   HOURSPERWEEK INT,
+   SALARY INT
+
+   FOREIGN[*] KEY (USERID) REFERENCES USER (ID)
+) "; expected "(, FOR, UNSIGNED, NOT, NULL, AS, DEFAULT, GENERATED, NOT, NULL, AUTO_INCREMENT, BIGSERIAL, SERIAL, IDENTITY, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, PRIMARY, UNIQUE, NOT, NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+CREATE TABLE librarian (
+   userID int, 
+   hoursPerWeek int,
+   salary int
+
+   FOREIGN KEY (userID) REFERENCES user (id)
+) [42001-193]
+2017-03-23 21:38:13 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE LIBRARIAN (
+   USERID INT, 
+   HOURSPERWEEK INT NOT NULL,
+   SALARY INT NOT NULL, 
+
+   FOREIGN KEY (USERID) REFERENCES USER (ID) [*]"; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+CREATE TABLE librarian (
+   userID int, 
+   hoursPerWeek int not null,
+   salary int not null, 
+
+   FOREIGN KEY (userID) REFERENCES user (id) [42001-193]
+2017-03-23 21:38:13 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "PRIMARY[*] KEY (USERID)
+) "; expected "PREPARE, {"; SQL statement:
+primary key (userID)
+) [42001-193]
+2017-03-23 21:38:38 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Table "LIBRARIAN" not found; SQL statement:
+drop table librarian [42102-193]
+2017-03-23 21:38:38 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE LIBRARIAN (
+   USERID INT NOT NULL, 
+   HOURSPERWEEK INT NOT NULL,
+   SALARY INT NOT NULL, 
+
+   FOREIGN KEY (USERID) REFERENCES USER (ID) [*]"; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+CREATE TABLE librarian (
+   userID int not null, 
+   hoursPerWeek int not null,
+   salary int not null, 
+
+   FOREIGN KEY (userID) REFERENCES user (id) [42001-193]
+2017-03-23 21:38:38 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement ")[*]"; SQL statement:
+) [42000-193]
+2017-03-23 21:38:45 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE LIBRARIAN (
+   USERID INT NOT NULL, 
+   HOURSPERWEEK INT NOT NULL,
+   SALARY INT NOT NULL, 
+
+   FOREIGN KEY (USERID) REFERENCES USER (ID) [*]"; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+CREATE TABLE librarian (
+   userID int not null, 
+   hoursPerWeek int not null,
+   salary int not null, 
+
+   FOREIGN KEY (userID) REFERENCES user (id) [42001-193]
+2017-03-23 21:38:45 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement ")[*]"; SQL statement:
+) [42000-193]
+2017-03-23 21:52:12 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE CHECKOUT(
+ PATRONID VARCHAR NOT NULL,
+ DEWEYID VARCHAR NOT NULL,
+ ITEMNUMBER VARCHAR NOT NULL,
+ BEGINNINGDATE DATETIME ,
+ ENDDATE DATETIME, 
+ DUEDATE DATETIME NOT NULL,
+
+ PRIMARY KEY (PATRONID, DEWEYID, ITEMNUMBER, BEGINNINGDATE),
+ FOREIGN KEY (PATRONID) REFERENCES PATRON (USERID)
+ FOREIGN[*] KEY (DEWEYID, ITEMNUMBER) REFERENCES ITEM(DEWEYID, ITEMNUMBER)
+
+) "; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+create table checkout(
+ patronID varchar not NULL,
+ deweyId varchar not NULL,
+ itemNumber varchar not NULL,
+ beginningDate datetime ,
+ endDate datetime, 
+ dueDate datetime not NULL,
+
+ primary key (patronID, deweyID, itemNumber, beginningdate),
+ foreign key (patronID) references patron (userID)
+ foreign key (deweyID, itemNumber) references item(deweyID, itemNumber)
+
+) [42001-193]
+2017-03-28 16:56:35 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.FileNotFoundException: backup.zip (Access is denied)"; "backup.zip"; SQL statement:
+BACKUP TO 'backup.zip' [90031-193]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:168)
+	at org.h2.message.DbException.convertIOException(DbException.java:330)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:102)
+	at org.h2.command.dml.BackupCommand.update(BackupCommand.java:51)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:98)
+	at org.h2.command.Command.executeUpdate(Command.java:258)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:184)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:158)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1380)
+	at org.h2.server.web.WebApp.query(WebApp.java:1053)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1015)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1002)
+	at org.h2.server.web.WebThread.process(WebThread.java:164)
+	at org.h2.server.web.WebThread.run(WebThread.java:89)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.io.FileNotFoundException: backup.zip (Access is denied)
+	at java.io.FileOutputStream.open0(Native Method)
+	at java.io.FileOutputStream.open(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.h2.store.fs.FilePathDisk.newOutputStream(FilePathDisk.java:290)
+	at org.h2.store.fs.FileUtils.newOutputStream(FileUtils.java:233)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:67)
+	... 12 more
+2017-03-28 16:56:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.FileNotFoundException: something.zip (Access is denied)"; "something.zip"; SQL statement:
+BACKUP TO 'something.zip' [90031-193]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:168)
+	at org.h2.message.DbException.convertIOException(DbException.java:330)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:102)
+	at org.h2.command.dml.BackupCommand.update(BackupCommand.java:51)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:98)
+	at org.h2.command.Command.executeUpdate(Command.java:258)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:184)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:158)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1380)
+	at org.h2.server.web.WebApp.query(WebApp.java:1053)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1015)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1002)
+	at org.h2.server.web.WebThread.process(WebThread.java:164)
+	at org.h2.server.web.WebThread.run(WebThread.java:89)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.io.FileNotFoundException: something.zip (Access is denied)
+	at java.io.FileOutputStream.open0(Native Method)
+	at java.io.FileOutputStream.open(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.h2.store.fs.FilePathDisk.newOutputStream(FilePathDisk.java:290)
+	at org.h2.store.fs.FileUtils.newOutputStream(FileUtils.java:233)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:67)
+	... 12 more
+2017-03-28 16:57:40 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.FileNotFoundException: backup.zip (Access is denied)"; "backup.zip"; SQL statement:
+BACKUP TO 'backup.zip' [90031-193]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:168)
+	at org.h2.message.DbException.convertIOException(DbException.java:330)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:102)
+	at org.h2.command.dml.BackupCommand.update(BackupCommand.java:51)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:98)
+	at org.h2.command.Command.executeUpdate(Command.java:258)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:184)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:158)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1380)
+	at org.h2.server.web.WebApp.query(WebApp.java:1053)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1015)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1002)
+	at org.h2.server.web.WebThread.process(WebThread.java:164)
+	at org.h2.server.web.WebThread.run(WebThread.java:89)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.io.FileNotFoundException: backup.zip (Access is denied)
+	at java.io.FileOutputStream.open0(Native Method)
+	at java.io.FileOutputStream.open(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.h2.store.fs.FilePathDisk.newOutputStream(FilePathDisk.java:290)
+	at org.h2.store.fs.FileUtils.newOutputStream(FileUtils.java:233)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:67)
+	... 12 more
+2017-03-28 17:02:44 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.FileNotFoundException: backup.zip (Access is denied)"; "backup.zip"; SQL statement:
+BACKUP TO 'backup.zip' [90031-193]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:168)
+	at org.h2.message.DbException.convertIOException(DbException.java:330)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:102)
+	at org.h2.command.dml.BackupCommand.update(BackupCommand.java:51)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:98)
+	at org.h2.command.Command.executeUpdate(Command.java:258)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:184)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:158)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1380)
+	at org.h2.server.web.WebApp.query(WebApp.java:1053)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1015)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1002)
+	at org.h2.server.web.WebThread.process(WebThread.java:164)
+	at org.h2.server.web.WebThread.run(WebThread.java:89)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.io.FileNotFoundException: backup.zip (Access is denied)
+	at java.io.FileOutputStream.open0(Native Method)
+	at java.io.FileOutputStream.open(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.h2.store.fs.FilePathDisk.newOutputStream(FilePathDisk.java:290)
+	at org.h2.store.fs.FileUtils.newOutputStream(FileUtils.java:233)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:67)
+	... 12 more
+2017-03-28 17:02:53 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.FileNotFoundException: backup.zip (Access is denied)"; "backup.zip"; SQL statement:
+BACKUP TO 'backup.zip' [90031-193]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:168)
+	at org.h2.message.DbException.convertIOException(DbException.java:330)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:102)
+	at org.h2.command.dml.BackupCommand.update(BackupCommand.java:51)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:98)
+	at org.h2.command.Command.executeUpdate(Command.java:258)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:184)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:158)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1380)
+	at org.h2.server.web.WebApp.query(WebApp.java:1053)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1015)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1002)
+	at org.h2.server.web.WebThread.process(WebThread.java:164)
+	at org.h2.server.web.WebThread.run(WebThread.java:89)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.io.FileNotFoundException: backup.zip (Access is denied)
+	at java.io.FileOutputStream.open0(Native Method)
+	at java.io.FileOutputStream.open(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.h2.store.fs.FilePathDisk.newOutputStream(FilePathDisk.java:290)
+	at org.h2.store.fs.FileUtils.newOutputStream(FileUtils.java:233)
+	at org.h2.command.dml.BackupCommand.backupTo(BackupCommand.java:67)
+	... 12 more
