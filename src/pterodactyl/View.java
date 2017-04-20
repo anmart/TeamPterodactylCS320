@@ -21,7 +21,7 @@ public class View {
 				+ "\t3. Quit\n");
 		
 		try {
-			String url = "jdbc:h2:~/workspace\\PterodactylProject\\test";
+			String url = "jdbc:h2:~\\Documents\\GitHub\\database\\TeamPterodactylCS320\\test";
 			Class.forName("org.h2.Driver");
 			conn = DriverManager.getConnection(url,
 					"sa",
@@ -138,25 +138,24 @@ public class View {
 		
 	}
 	public void viewDelinquentPatrons(){
-		/*
-		 * we probably want their names too right? we'll need to 
-		 * do a similar merge in this one
+		/** Get's the name of the deliquent patrons
+		 * By looking for names of patrons who have overdue books
 		 */
-		String s_createView = "Create Or Replace view overdue_books "
-				+ "As select patronID "
-				+ "From checkout "
-				+ "Where endDate is null and dueDate < curDate()" ;
-		String s_queryView = "Select * From overdue_books";
-		
-		
+
+		String s_queryView = "select name, ID " +
+				"from user " +
+				"where ID in (select distinct patronID "  +
+				"from checkout " +
+				"where endDate is null and dueDate < curDate())";
+
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
-			stmt.execute(s_createView);
+			//stmt.execute(s_createView);
 			ResultSet res = stmt.executeQuery(s_queryView);
-			
+
 			while(res.next()){
-				System.out.println("\t" + res.getInt(1));
+				System.out.println("\t" + res.getString(1) + "\t\t\t" + res.getString(2));
 			}
 			
 			
