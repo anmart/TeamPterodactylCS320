@@ -13,3 +13,9 @@ Team Project for CS320.
 * There is no password
 6. Connect!
 
+## How to get the code connected to the database:
+1. You need to change the address of the database
+2. In the view.java, change line number 24 to where you put the database files
+* For example, if you put the files in the folder C:\Users\Sherry\Documents\GitHub\database\TeamPterodactylCS320
+change the line to ~\Documents\GitHub\database\TeamPterodactylCS320\test
+* \test is neccessary to access the database!
