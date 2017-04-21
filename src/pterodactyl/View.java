@@ -68,8 +68,11 @@ public class View {
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IllegalStateException e){
-			System.out.println("ERROR! Database file in use. Concurrent users are not handled.");
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.print("Unhandled error");
+			e.printStackTrace();
 		}
 
 
