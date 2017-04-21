@@ -90,8 +90,10 @@ public class View {
         System.out.print("Enter your ID (Enter -1 to cancel): ");
         int inputInt = reader.nextInt();
         boolean found = false;
+
         if (inputInt != -1) {
-            String s_queryLibrarians = "Select userID from librarian";
+            //String s_queryLibrarians = "Select userID from librarian ";
+			String s_queryLibrarians = "Select userID from librarian where userID = " + inputInt;
 
 
             Statement stmt;
@@ -99,12 +101,10 @@ public class View {
                 stmt = conn.createStatement();
                 ResultSet res = stmt.executeQuery(s_queryLibrarians);
 
-                // Look through the list of librarian IDs
-                // There's probably a better way to do this using SQL
-                while (res.next() && !found) {
-                    if (res.getInt(1) == inputInt)
-                        found = true;
-                }
+
+				if (res.next())
+					found = true;
+
             } catch (SQLException e) {
 
             }
@@ -116,15 +116,12 @@ public class View {
         }
 
 
-        int message;
         if (inputInt == -1)
-            message = -1;
+            return -1;
         else if (found)
-            message = 1;
-        else
-            message = 0;
+            return 1;
 
-        return message;
+        return 0;
 
     }
 
