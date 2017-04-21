@@ -7,51 +7,77 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
+
+/**
+ * View
+ * The class that does all the handling of the database
+ * and user input
+ */
 public class View {
 
 	Scanner reader;
 	Connection conn;
 	public View(){
 		reader = new Scanner(System.in);
-		
-		
-		System.out.print("Log in as:\n"
-				+ "\t1. Librarian\n"
-				+ "\t2. Patron\n"
-				+ "\t3. Quit\n");
-		
+
 		try {
+
+			// Connect to the database first
+			// If it doesn't connect at all, then just exit the program
+
 			String url = "jdbc:h2:~\\Documents\\GitHub\\database\\TeamPterodactylCS320\\test";
 			Class.forName("org.h2.Driver");
 			conn = DriverManager.getConnection(url,
 					"sa",
 					"");
+
+			System.out.println("Log in as:\n"
+					+ "\t1. Librarian\n"
+					+ "\t2. Patron\n"
+					+ "\t3. Quit\n");
+
+			System.out.print("Enter Your Response: ");
+
+			int inputInt = reader.nextInt();
+
+			// Need to implement login with ID after selecting what type of user you are
+
+			switch(inputInt){
+				case 1:
+					LibrarianOptions();
+					break;
+				case 2:
+					PatronOptions();
+					break;
+				default:
+					System.out.println("Thank you for using our system. Have a nice day");
+
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.err.println("ERROR! Database file in use. Concurrent users are not handled.");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IllegalStateException e){
+			System.out.println("ERROR! Database file in use. Concurrent users are not handled.");
 		}
+
+
 		
-		int inputInt = reader.nextInt();
-		
-		switch(inputInt){
-		case 1:
-			LibrarianOptions();
-			break;
-		case 2:
-			PatronOptions();
-			break;
-		default:
-			System.out.println("Quitting");
-					
-		}
+
 		
 	}
-	
+
+    /**
+     * LibrarianOptions
+     * How the librarian can perform their duties
+     * @return true
+     */
+
 	public boolean LibrarianOptions(){
-		System.out.print("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
+		System.out.println("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
 				+ "\t1. Add Item\n"
 				+ "\t2. Remove Item\n"
 				+ "\t3. Clear Waitlists\n"
@@ -167,16 +193,19 @@ public class View {
 		}
 	}
 	public void findPartTimeLibrarians(){
-		String s_queryLibrarians = "Select userid,hoursPerWeek from librarian where hoursPerWeek <= 20";
+		// Get the name and hours per week of part time Librarians
+		String s_queryLibrarians = "Select name, hoursPerWeek from librarian inner join user on userid " +
+				"where hoursPerWeek <= 20";
 		
 		
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
 			ResultSet res = stmt.executeQuery(s_queryLibrarians);
-			
+
+			System.out.printf("%-10s %-10s\n", "name", "Hours Per Week");
 			while(res.next()){
-				System.out.println("\t" + res.getInt(1) + "\t" + res.getInt(2));
+				System.out.printf("\t" + res.getString(1) + "\t" + res.getInt(2));
 			}
 			
 			
@@ -258,7 +287,13 @@ public class View {
 		System.out.println("Updated.");
 		
 	}
-	
+
+    /**
+     * PatronOptions
+     * How the patron interacts with the system
+     * @return true
+     */
+
 	public boolean PatronOptions(){
 		System.out.print("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
 				+ "\t1. Search For Items\n"
