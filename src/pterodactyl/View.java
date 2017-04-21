@@ -44,7 +44,15 @@ public class View {
 
 			switch(inputInt){
 				case 1:
-					LibrarianOptions();
+				    int login;
+				    // Keep looping till login successful or user quits
+				    do{
+                        login = LibrarianLogin();
+                    } while(login == 0);
+
+                    if (login == 1) //You logined! else you quit
+					    LibrarianOptions();
+
 					break;
 				case 2:
 					PatronOptions();
@@ -69,6 +77,53 @@ public class View {
 
 		
 	}
+
+    /**
+     * LibrarianLogin
+     * How a person logins as a librarian
+     * @return if user login correctly
+     */
+    public int LibrarianLogin(){
+        System.out.print("Enter your ID (Enter -1 to cancel): ");
+        int inputInt = reader.nextInt();
+        boolean found = false;
+        if (inputInt != -1) {
+            String s_queryLibrarians = "Select userID from librarian";
+
+
+            Statement stmt;
+            try {
+                stmt = conn.createStatement();
+                ResultSet res = stmt.executeQuery(s_queryLibrarians);
+
+                // Look through the list of librarian IDs
+                // There's probably a better way to do this using SQL
+                while (res.next() && !found) {
+                    if (res.getInt(1) == inputInt)
+                        found = true;
+                }
+            } catch (SQLException e) {
+
+            }
+
+            if (found) {
+                System.out.println("Successful login");
+            } else
+                System.out.println("Librarian ID not found");
+        }
+
+
+        int message;
+        if (inputInt == -1)
+            message = -1;
+        else if (found)
+            message = 1;
+        else
+            message = 0;
+
+        return message;
+
+    }
 
     /**
      * LibrarianOptions
@@ -205,7 +260,7 @@ public class View {
 
 			System.out.printf("%-10s %-10s\n", "name", "Hours Per Week");
 			while(res.next()){
-				System.out.printf("\t" + res.getString(1) + "\t" + res.getInt(2));
+				System.out.println("\t" + res.getString(1) + "\t" + res.getInt(2));
 			}
 			
 			
