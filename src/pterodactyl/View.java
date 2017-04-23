@@ -142,24 +142,29 @@ public class View {
      */
 
 	public boolean LibrarianOptions(){
-		System.out.println("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
-				+ "\t1. Add Item\n"
-				+ "\t2. Remove Item\n"
-				+ "\t3. Clear Waitlists\n"
-				+ "\t4. Edit Personal Information\n"
-				+ "\t5. Find Overdue Books\n"
-				+ "\t6. Find Delinquent Patrons\n"
-				+ "\t7. Find Part Time Librarians");
-		int inputInt = 0;
 
-		while (inputInt == 0){
-			try {
-				inputInt = reader.nextInt();
-			}
-			catch (InputMismatchException e){
-				System.err.println("Not a valid option.");
-			}
-		}
+        int inputInt = 0;
+
+        // Added error checking for when the user doesn't enter a number
+        do{
+            System.out.println("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
+                    + "\t1. Add Item\n"
+                    + "\t2. Remove Item\n"
+                    + "\t3. Clear Waitlists\n"
+                    + "\t4. Edit Personal Information\n"
+                    + "\t5. Find Overdue Books\n"
+                    + "\t6. Find Delinquent Patrons\n"
+                    + "\t7. Find Part Time Librarians");
+
+            System.out.print("Enter Your Response: ");
+
+            try {
+                inputInt = Integer.parseInt(reader.nextLine());
+            }
+            catch (NumberFormatException e){
+                System.err.println("Enter a number.");
+            }
+        }while (inputInt == 0);
 		
 		switch(inputInt){
 		
