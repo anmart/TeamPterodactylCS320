@@ -31,14 +31,24 @@ public class View {
 					"sa",
 					"");
 
-			System.out.println("Log in as:\n"
-					+ "\t1. Librarian\n"
-					+ "\t2. Patron\n"
-					+ "\t3. Quit\n");
+			int inputInt = 0;
 
-			System.out.print("Enter Your Response: ");
+			// Added error checking for when the user doesn't enter a number
+			do{
+				System.out.println("Log in as:\n"
+						+ "\t1. Librarian\n"
+						+ "\t2. Patron\n"
+						+ "\t3. Quit\n");
 
-			int inputInt = reader.nextInt();
+				System.out.print("Enter Your Response: ");
+
+				try {
+					inputInt = Integer.parseInt(reader.nextLine());
+				}
+				catch (NumberFormatException e){
+					System.err.println("Enter a number.");
+				}
+			}while (inputInt == 0);
 
 			// Need to implement login with ID after selecting what type of user you are
 
@@ -140,8 +150,16 @@ public class View {
 				+ "\t5. Find Overdue Books\n"
 				+ "\t6. Find Delinquent Patrons\n"
 				+ "\t7. Find Part Time Librarians");
-		
-		int inputInt = reader.nextInt();
+		int inputInt = 0;
+
+		while (inputInt == 0){
+			try {
+				inputInt = reader.nextInt();
+			}
+			catch (InputMismatchException e){
+				System.err.println("Not a valid option.");
+			}
+		}
 		
 		switch(inputInt){
 		
@@ -167,7 +185,7 @@ public class View {
 			findPartTimeLibrarians();
 			break;
 		default:
-			System.out.println("Error: Not a valid number");
+			System.out.println("Error: Not a valid number. Quitting. \t Thank you for using the system.");
 			return false;
 		
 		}
@@ -273,6 +291,13 @@ public class View {
 		
 	}
 	public void searchForItems(){
+		System.out.println("Search by\n" +
+				"\t1. Author" +
+				"\t2. Director" +
+				"\t3. Year" +
+				"\t4. Genre" +
+				"\t5. DeweyID");
+		int searchTerm = reader.nextInt();
 		System.out.println("Use Search Term as Substring?\n"
 				+ "\t1. Yes\n"
 				+ "\t2. No\n");
@@ -290,9 +315,11 @@ public class View {
 		try {
 			stmt = conn.createStatement();
 			ResultSet res = stmt.executeQuery(s_queryItems);
-			
+
+			if (res.next() == false)
+				System.out.println("No items found.");
 			while(res.next()){
-				System.out.println("\t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
+				System.out.println(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
 			}
 			
 
