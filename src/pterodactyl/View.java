@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.Scanner;
+import java.sql.Date;
 
 
 /**
@@ -296,24 +298,78 @@ public class View {
 		
 	}
 	public void searchForItems(){
-		System.out.println("Search by\n" +
-				"\t1. Author" +
-				"\t2. Director" +
-				"\t3. Year" +
-				"\t4. Genre" +
-				"\t5. DeweyID");
-		int searchTerm = reader.nextInt();
-		System.out.println("Use Search Term as Substring?\n"
-				+ "\t1. Yes\n"
-				+ "\t2. No\n");
-		boolean useSubstring = reader.nextInt() == 1;
-		System.out.println("Please Enter Search Term:\n");
+        int inputInt = 0;
+
+        // Added error checking for when the user doesn't enter a number
+        do{
+            System.out.println("Search by\n" +
+                    "\t1. Author\n" +
+                    "\t2. Director\n" +
+                    "\t3. Year\n" +
+                    "\t4. Genre\n" +
+                    "\t5. DeweyID\n");
+
+            System.out.println("Enter Your Response: ");
+
+            try {
+                inputInt = Integer.parseInt(reader.nextLine());
+            }
+            catch (NumberFormatException e){
+                System.err.println("Enter a number.");
+            }
+
+            if (inputInt > 5 || inputInt < 1){
+                System.err.println("Please enter a valid number.");
+            }
+        }while (inputInt == 0);
+
+
+        int substring = 0;
+        do{
+            System.out.println("Use Search Term as Substring?\n"
+                    + "\t1. Yes\n"
+                    + "\t2. No\n");
+
+            System.out.print("Enter Your Response (Number): ");
+
+            try {
+                substring = Integer.parseInt(reader.nextLine());
+                if (substring != 1 && substring != 2)
+                    System.out.print("Defaulting to No.");
+            }
+            catch (NumberFormatException e){
+                System.err.println("Enter a number.");
+            }
+        }while (substring == 0);
+
+		boolean useSubstring = substring == 1;
+
+		System.out.println("Enter your search term: ");
 		String titleQuery = reader.next();
 		if(useSubstring)
 			titleQuery = "%" + titleQuery + "%";
 
-		
-		String s_queryItems = "Select deweyID, ItemNumber, title from item where title like '" + titleQuery + "'";
+		String whereClause = "";
+		switch(inputInt){
+            case 1:
+                whereClause = "inner join book where item.deweyID = book.deweyID and item.itemnumber = book.itemnumber " +
+                        "and author like '";
+                break;
+            case 2:
+                whereClause = "inner join DVD where item.deweyID = DVD.deweyID and item.itemnumber = DVD.itemnumber " +
+                        "and director like '";
+                break;
+            case 3:
+                whereClause = "where year like '";
+                break;
+            case 4:
+                whereClause = "where genre like '";
+                break;
+            case 5:
+                whereClause = "where deweyID like '";
+                break;
+        }
+		String s_queryItems = "Select deweyID, ItemNumber, title from item " + whereClause + titleQuery + "'";
 		
 		
 		Statement stmt;
@@ -323,10 +379,12 @@ public class View {
 
 			if (res.next() == false)
 				System.out.println("No items found.");
-			while(res.next()){
+			else {
 				System.out.println(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
+				while (res.next()) {
+					System.out.println(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
+				}
 			}
-			
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -334,8 +392,92 @@ public class View {
 		}		
 	}
 	
-	public void renewItem(){
-		
+	public void renewItem(int patronID){
+		int inputInt = 0;
+		int itemNumber = 0;
+
+		// Added error checking for when the user doesn't enter a number
+		do{
+			System.out.println("Enter the dewey ID of the item you want to renew: ");
+
+			try {
+				inputInt = Integer.parseInt(reader.nextLine());
+			}
+			catch (NumberFormatException e){
+				System.err.println("Enter a number.");
+			}
+
+			System.out.println("Enter the item number of the item you want to renew: ");
+
+			try {
+				itemNumber = Integer.parseInt(reader.nextLine());
+			}
+			catch (NumberFormatException e){
+				System.err.println("Enter a number.");
+			}
+
+		}while (inputInt == 0 || itemNumber == 0);
+
+		String s_queryFindItem = "Select deweyID, itemnumber from item where " +
+				"deweyID = " + inputInt +
+				" and itemnumber = " + itemNumber;
+
+		String s_queryFindYourCheckOut = "Select endDate, dueDate from checkout where " +
+				"deweyID = " + inputInt +
+				" and itemnumber = " + itemNumber +
+				" and patronID = " + patronID +
+				" endDate is null";
+
+		String s_queryFindOtherHolds = "Select * from holds where " +
+				"deweyID = " + inputInt +
+				" and itemnumber = " + itemNumber +
+				" and patronID != " + patronID; //Not sure if patronId check is neccessary
+
+        String s_queryUpdateCheckout = "Update checkout set dueDate = DATEADD(week,2,CURRENT_TIMESTAMP) " +
+                "deweyID = " + inputInt +
+                " and itemnumber = " + itemNumber +
+                " and patronID = " + patronID + " and endDate is not null";
+
+		Statement stmt;
+		try {
+			stmt = conn.createStatement();
+			ResultSet res = stmt.executeQuery(s_queryFindItem);
+
+			if (res.next() == false)
+				System.out.println("No item found. Make sure the deweyID of " + inputInt + " and the itemnumber of " +
+						itemNumber + " is correct");
+			else {
+				ResultSet resFindCOStatus = stmt.executeQuery(s_queryFindYourCheckOut);
+				if (resFindCOStatus.next() == false) {
+					System.out.println("This item is not currently checked out by you.");
+					// the user hasn't checked out this book before
+				} else if (resFindCOStatus.getDate(1) != null) {
+					System.out.println("This item is not currently checked out by you.");
+					// this user has already returned the book
+				} else if (resFindCOStatus.getDate(2).compareTo(Date.valueOf(LocalDate.now())) < 0) {
+					// the dueDate has already passed! can't renew overdue book
+					System.out.println("This item is overdue. Cannot renew an overdue item. Please return it.");
+				} else {
+					ResultSet resFindBookStatus = stmt.executeQuery(s_queryFindOtherHolds);
+					if (resFindBookStatus.next() == false) {
+						//update the checkout
+                        stmt.executeQuery(s_queryUpdateCheckout);
+					}
+					else{
+						// another user has a hold on this item
+						System.out.println("This item has existing hold(s). You cannot renew it.");
+					}
+				}
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+
 	}
 	public void checkOutItem(){
 		
@@ -382,15 +524,18 @@ public class View {
      */
 
 	public boolean PatronOptions(){
-		System.out.print("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
+		System.out.println("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
 				+ "\t1. Search For Items\n"
 				+ "\t2. Edit Personal Information\n"
 				+ "\t3. Renew an Item\n"
 				+ "\t4. Check Out Item\n"
 				+ "\t5. Place Hold On Item\n"
 				+ "\t6. Remove Hold on Item");
+
+		int patronID = 917062;
+		System.out.println("Enter Your Response: ");
 		
-		int inputInt = reader.nextInt(); 
+		int inputInt = Integer.parseInt(reader.nextLine());
 		
 		switch(inputInt){
 		
@@ -401,7 +546,7 @@ public class View {
 			editPersonalInformation();
 			break;
 		case 3:
-			renewItem();
+			renewItem(patronID);
 			break;
 		case 4:
 			checkOutItem();
