@@ -354,12 +354,10 @@ public class View {
 		String whereClause = "";
 		switch(inputInt){
             case 1:
-                whereClause = "inner join book where item.deweyID = book.deweyID and item.itemnumber = book.itemnumber " +
-                        "and author like '";
+                whereClause = "natural join book where author like '";
                 break;
             case 2:
-                whereClause = "inner join DVD where item.deweyID = DVD.deweyID and item.itemnumber = DVD.itemnumber " +
-                        "and director like '";
+                whereClause = "natural join DVD where director like '";
                 break;
             case 3:
                 whereClause = "where year like '";
