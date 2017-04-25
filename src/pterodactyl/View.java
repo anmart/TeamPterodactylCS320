@@ -100,9 +100,9 @@ public class View {
 		}
 
 
-		
 
-		
+
+
 	}
 
     /**
@@ -206,28 +206,28 @@ public class View {
 
             }
         }while(inputInt > 0 && inputInt <= 7);
-		
+
 		return true;
 	}
-	
-	
-	public void addItem(){		
+
+
+	public void addItem(){
 	}
 	public void removeItem(){
-		/* Not 100% certain this is the proper way to do it, 
-		 * but I'm just removing the item from every table 
+		/* Not 100% certain this is the proper way to do it,
+		 * but I'm just removing the item from every table
 		 * it can possibly show in
 		 */
 		System.out.println("Please enter Dewey ID");
 		int dewey = reader.nextInt();
 		System.out.println("Please enter Item Number");
 		int itemNumber = reader.nextInt();
-		
+
 		//checkout, book, dvd, item
-		
+
 		String s_deleteItems = "where deweyid = " + dewey + " and itemnumber = " + itemNumber;
-		
-		
+
+
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
@@ -235,27 +235,27 @@ public class View {
 			stmt.execute("delete from checkout " + s_deleteItems);
 			stmt.execute("delete from dvd " + s_deleteItems);
 			stmt.execute("delete from item " + s_deleteItems);
-			
+
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
-		
-		
-		
+		}
+
+
+
 	}
 	public void clearWaitlists(){
 		System.out.println("Please enter Dewey ID");
 		int dewey = reader.nextInt();
 		System.out.println("Please enter Item Number");
 		int itemNumber = reader.nextInt();
-		
+
 		//checkout, book, dvd, item
-		
+
 		String s_deleteItems = "where deweyid = " + dewey + " and itemnumber = " + itemNumber;
-		
-		
+
+
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
@@ -265,10 +265,10 @@ public class View {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}				
+		}
 	}
 	public void editPersonalInformation(int userID){
-	
+
 	}
 
 	public void viewOverdueBooks(){
@@ -281,26 +281,26 @@ public class View {
 				+ "From checkout "
 				+ "Where endDate is null and dueDate < curDate()" ;
 		String s_queryView = "Select * From overdue_books";
-		
-		
+
+
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
 			stmt.execute(s_createView);
 			ResultSet res = stmt.executeQuery(s_queryView);
-			
+
 			while(res.next()){
 				System.out.println("\t" + res.getInt(1) + "\t" + res.getInt(2));
 			}
-			
-			
-			
-			
+
+
+
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 	public void viewDelinquentPatrons(){
 		/** Get's the name of the deliquent patrons
@@ -322,10 +322,10 @@ public class View {
 			while(res.next()){
 				System.out.println("\t" + res.getString(1) + "\t\t\t" + res.getString(2));
 			}
-			
-			
-			
-			
+
+
+
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -333,10 +333,10 @@ public class View {
 	}
 	public void findPartTimeLibrarians(){
 		// Get the name and hours per week of part time Librarians
-		String s_queryLibrarians = "Select name, hoursPerWeek from librarian inner join user on userid " +
+		String s_queryLibrarians = "Select name, hoursPerWeek from librarian inner join user on userid = id" +
 				"where hoursPerWeek <= 20";
-		
-		
+
+
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
@@ -346,15 +346,15 @@ public class View {
 			while(res.next()){
 				System.out.println("\t" + res.getString(1) + "\t" + res.getInt(2));
 			}
-			
-			
-			
-			
+
+
+
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
-		
+		}
+
 	}
 
     /**
@@ -420,8 +420,20 @@ public class View {
      */
     public int PatronLogin(){
         System.out.print("Enter your ID (Enter -1 to cancel): ");
-        int inputInt = Integer.parseInt(reader.nextLine());
-        int pin;
+        int inputInt = 0;
+        while (inputInt == 0) {
+            try {
+                inputInt = Integer.parseInt(reader.nextLine());
+
+                if (inputInt <= 0 && inputInt != -1){
+                    System.out.println("That's not a valid ID.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Enter a number.");
+            }
+        }
+
+        int pin = 0;
         boolean found = false;
         boolean correct = false;
 
@@ -439,32 +451,37 @@ public class View {
 
                 if (found) {
                     System.out.print("Enter your PIN (Enter -1 to cancel): ");
-                    pin = Integer.parseInt(reader.nextLine());
-                    s_queryPatron = "Select userID from user where userID = " + inputInt + " and PIN = " + pin;
 
-                    res = stmt.executeQuery(s_queryPatron);
+                    try {
+                        pin = Integer.parseInt(reader.nextLine());
 
-                    if (res.next()) {
-                        correct = true;
-                        System.out.println("Successful login");
+                        s_queryPatron = "Select ID from user where ID = " + inputInt + " and PIN = " + pin;
+
+                        res = stmt.executeQuery(s_queryPatron);
+
+                        if (res.next()) {
+                            correct = true;
+                            System.out.println("Successful login");
+                        } else {
+                            correct = false;
+                            System.out.println("Incorrect PIN");
+                        }
+
+                    } catch (NumberFormatException e) {
+                        System.out.println("That's not a valid PIN");
                     }
-                    else {
-                        correct = false;
-                        System.out.println("Incorrect PIN");
-                    }
-
 
                 } else
                     System.out.println("Patron ID not found");
 
 
             } catch (SQLException e) {
-
+                // Should probably do something more here
+                System.out.println("SQL ERROR " + e.toString());
             }
 
 
         }
-
 
         if (inputInt == -1 || correct)
             return inputInt;
@@ -553,8 +570,8 @@ public class View {
                 "' group by deweyID";
 		// group by will make sure the same books will stick together
         // it'd be really weird if Book A copy 1 and Book A copy 2 were far apart
-		
-		
+
+
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
@@ -572,7 +589,7 @@ public class View {
 		} catch (SQLException e) {
 			System.out.println("Error with the SQL " + e.toString());
 			//e.printStackTrace();
-		}		
+		}
 	}
 
     /**
@@ -908,7 +925,7 @@ public class View {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-		
+
 
     }
 
@@ -976,7 +993,7 @@ public class View {
 
         String s_queryHoldEnd = "update holds set endDate = curDate() where userID = " + patronID +  " and DeweyID = " + itemDeweyID
                 + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
-		
+
 		Statement stmt;
 		try {
             stmt = conn.createStatement();
@@ -984,14 +1001,14 @@ public class View {
 
 			if (res.next() == true)
 			    stmt.execute(s_queryHoldEnd);
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
 		System.out.println("Updated hold.");
-		
+
 	}
-	
+
 }
 
