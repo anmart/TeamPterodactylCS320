@@ -48,7 +48,7 @@ public class View {
 					inputInt = Integer.parseInt(reader.nextLine());
 				}
 				catch (NumberFormatException e){
-					System.err.println("Enter a number.");
+					System.out.println("Enter a number.");
 				}
 			}while (inputInt == 0);
 
@@ -88,7 +88,7 @@ public class View {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
-			System.err.println("ERROR! Database file in use. Concurrent users are not handled.");
+			System.out.println("ERROR! Database file in use. Concurrent users are not handled.");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -173,7 +173,7 @@ public class View {
                 try {
                     inputInt = Integer.parseInt(reader.nextLine());
                 } catch (NumberFormatException e) {
-                    System.err.println("Enter a number.");
+                    System.out.println("Enter a number.");
                 }
             } while (inputInt == 0);
 
