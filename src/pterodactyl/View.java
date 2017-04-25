@@ -890,14 +890,17 @@ public class View {
                 " and patronID = " + patronID +
                 " and endDate is null";
 
-        String s_queryAddHold = "With endPosition(number) as (select count(*) from holds where " +
+        // doesn't work see github
+        String s_count = "Select count(patronID) from holds where " +
                 "deweyID = " + itemDeweyID +
                 " and itemnumber = " + itemNumber +
-                " and endDate is null)" +
-                "Insert into holds " +
+                " and endDate is null";
+        int count = 1;
+
+        String s_queryAddHold = "Insert into holds " +
                 "(PATRONID, DEWEYID, ITEMNUMBER, ENDDATE, POSITION)" +
-                "values (" + patronID + ", " + itemDeweyID + ", " + itemNumber + ", " +
-                "curDate(), null, DATEADD(week,2,CURRENT_TIMESTAMP), endPosition.number)";
+                " values (" + patronID + ", " + itemDeweyID + ", " + itemNumber + ", " +
+                " null, " + count + ")";
 
         Statement stmt;
 
@@ -912,6 +915,9 @@ public class View {
 
                 if (res.next() == false){
                     // Create a new hold for this item
+                    res = stmt.executeQuery(s_count);
+                    if (res.next() == true)
+                        count = res.getInt(1);
                     stmt.execute(s_queryAddHold);
                     System.out.println("You have a placed a hold on this item");
                 }
