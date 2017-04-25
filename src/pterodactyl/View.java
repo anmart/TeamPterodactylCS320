@@ -205,10 +205,58 @@ public class View {
 	public void addItem(){		
 	}
 	public void removeItem(){
+		/* Not 100% certain this is the proper way to do it, 
+		 * but I'm just removing the item from every table 
+		 * it can possibly show in
+		 */
+		System.out.println("Please enter Dewey ID");
+		int dewey = reader.nextInt();
+		System.out.println("Please enter Item Number");
+		int itemNumber = reader.nextInt();
+		
+		//checkout, book, dvd, item
+		
+		String s_deleteItems = "where deweyid = " + dewey + " and itemnumber = " + itemNumber;
+		
+		
+		Statement stmt;
+		try {
+			stmt = conn.createStatement();
+			stmt.execute("delete from book " + s_deleteItems);
+			stmt.execute("delete from checkout " + s_deleteItems);
+			stmt.execute("delete from dvd " + s_deleteItems);
+			stmt.execute("delete from item " + s_deleteItems);
+			
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+		
 		
 	}
 	public void clearWaitlists(){
+		System.out.println("Please enter Dewey ID");
+		int dewey = reader.nextInt();
+		System.out.println("Please enter Item Number");
+		int itemNumber = reader.nextInt();
 		
+		//checkout, book, dvd, item
+		
+		String s_deleteItems = "where deweyid = " + dewey + " and itemnumber = " + itemNumber;
+		
+		
+		Statement stmt;
+		try {
+			stmt = conn.createStatement();
+			stmt.execute("update holds set enddate = curDate() " + s_deleteItems);
+
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
 	}
 	public void editPersonalInformation(int userID){
 	
