@@ -375,7 +375,14 @@ public class View {
 
         System.out.println("Enter Your Response: ");
 
-        int inputInt = Integer.parseInt(reader.nextLine());
+        int inputInt = 0;
+        while(inputInt == 0) {
+            try {
+                inputInt = Integer.parseInt(reader.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println();
+            }
+        }
 
         switch(inputInt){
 
@@ -490,11 +497,11 @@ public class View {
                 inputInt = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
-                System.err.println("Enter a number.");
+                System.out.println("Enter a number.");
             }
 
             if (inputInt > 5 || inputInt < 1){
-                System.err.println("Please enter a valid number.");
+                System.out.println("Please enter a valid number.");
             }
         }while (inputInt == 0);
 
@@ -513,7 +520,7 @@ public class View {
                     System.out.print("Defaulting to No.");
             }
             catch (NumberFormatException e){
-                System.err.println("Enter a number.");
+                System.out.println("Enter a number.");
             }
         }while (substring == 0);
 
@@ -585,7 +592,7 @@ public class View {
 				inputInt = Integer.parseInt(reader.nextLine());
 			}
 			catch (NumberFormatException e){
-				System.err.println("Enter a number.");
+				System.out.println("Enter a number.");
 			}
 
 			System.out.println("Enter the item number of the item you want to renew: ");
@@ -594,7 +601,7 @@ public class View {
 				itemNumber = Integer.parseInt(reader.nextLine());
 			}
 			catch (NumberFormatException e){
-				System.err.println("Enter a number.");
+				System.out.println("Enter a number.");
 			}
 
 		}while (inputInt == 0 || itemNumber == 0);
@@ -680,11 +687,11 @@ public class View {
                 itemDeweyID = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
-                System.err.println("Enter a valid number.");
+                System.out.println("Enter a valid number.");
             }
 
             if (itemDeweyID < 0 && itemDeweyID != -1){
-                System.err.println("Enter a valid number (greater than zero or -1).");
+                System.out.println("Enter a valid number (greater than zero or -1).");
                 itemDeweyID = 0;
             }
 
@@ -703,11 +710,11 @@ public class View {
                 itemNumber = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
-                System.err.println("Enter a valid number.");
+                System.out.println("Enter a valid number.");
             }
 
             if (itemNumber < 0 && itemNumber != -1){
-                System.err.println("Enter a valid number (greater than zero or -1).");
+                System.out.println("Enter a valid number (greater than zero or -1).");
                 itemNumber = 0;
             }
         }
@@ -818,11 +825,11 @@ public class View {
                 itemDeweyID = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
-                System.err.println("Enter a valid number.");
+                System.out.println("Enter a valid number.");
             }
 
             if (itemDeweyID < 0 && itemDeweyID != -1){
-                System.err.println("Enter a valid number (greater than zero or -1).");
+                System.out.println("Enter a valid number (greater than zero or -1).");
                 itemDeweyID = 0;
             }
 
@@ -841,11 +848,11 @@ public class View {
                 itemNumber = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
-                System.err.println("Enter a valid number.");
+                System.out.println("Enter a valid number.");
             }
 
             if (itemNumber < 0 && itemNumber != -1){
-                System.err.println("Enter a valid number (greater than zero or -1).");
+                System.out.println("Enter a valid number (greater than zero or -1).");
                 itemNumber = 0;
             }
         }
@@ -926,11 +933,11 @@ public class View {
                 itemDeweyID = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
-                System.err.println("Enter a valid number.");
+                System.out.println("Enter a valid number.");
             }
 
             if (itemDeweyID < 0 && itemDeweyID != -1){
-                System.err.println("Enter a valid number (greater than zero or -1).");
+                System.out.println("Enter a valid number (greater than zero or -1).");
                 itemDeweyID = 0;
             }
 
@@ -949,11 +956,11 @@ public class View {
                 itemNumber = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
-                System.err.println("Enter a valid number.");
+                System.out.println("Enter a valid number.");
             }
 
             if (itemNumber < 0 && itemNumber != -1){
-                System.err.println("Enter a valid number (greater than zero or -1).");
+                System.out.println("Enter a valid number (greater than zero or -1).");
                 itemNumber = 0;
             }
         }
