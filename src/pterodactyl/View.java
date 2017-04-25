@@ -333,7 +333,8 @@ public class View {
 	}
 	public void findPartTimeLibrarians(){
 		// Get the name and hours per week of part time Librarians
-		String s_queryLibrarians = "Select name, hoursPerWeek from librarian inner join user on userid = id" +
+		String s_queryLibrarians = "Select name, hoursPerWeek from librarian inner join user on userid = id " +
+                "" +
 				"where hoursPerWeek <= 20";
 
 
@@ -567,7 +568,7 @@ public class View {
                 break;
         }
 		String s_queryItems = "Select deweyID, ItemNumber, title from item " + whereClause + titleQuery +
-                "' group by deweyID";
+                "\' group by deweyID";
 		// group by will make sure the same books will stick together
         // it'd be really weird if Book A copy 1 and Book A copy 2 were far apart
 
