@@ -59,11 +59,14 @@ public class View {
 				    int login;
 				    // Keep looping till login successful or user quits
 				    do{
+				        // Login is either  0 - Not Found
+                        //                  -1 - Cancel
+                        //                  ID Number
                         login = LibrarianLogin();
                     } while(login == 0);
 
-                    if (login == 1) //You logined! else you quit
-					    LibrarianOptions();
+                    if (login > 0) //You logined! else you quit
+					    LibrarianOptions(login);
 
 					break;
 				case 2:
@@ -128,10 +131,8 @@ public class View {
         }
 
 
-        if (inputInt == -1)
-            return -1;
-        else if (found)
-            return 1;
+        if (inputInt == -1 || found)
+            return inputInt;
 
         return 0;
 
@@ -143,59 +144,59 @@ public class View {
      * @return true
      */
 
-	public boolean LibrarianOptions(){
+	public boolean LibrarianOptions(int librarianID){
 
         int inputInt = 0;
+        do {
+            // Added error checking for when the user doesn't enter a number
+            do {
+                System.out.println("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
+                        + "\t1. Add Item\n"
+                        + "\t2. Remove Item\n"
+                        + "\t3. Clear Waitlists\n"
+                        + "\t4. Edit Personal Information\n"
+                        + "\t5. Find Overdue Books\n"
+                        + "\t6. Find Delinquent Patrons\n"
+                        + "\t7. Find Part Time Librarians");
 
-        // Added error checking for when the user doesn't enter a number
-        do{
-            System.out.println("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
-                    + "\t1. Add Item\n"
-                    + "\t2. Remove Item\n"
-                    + "\t3. Clear Waitlists\n"
-                    + "\t4. Edit Personal Information\n"
-                    + "\t5. Find Overdue Books\n"
-                    + "\t6. Find Delinquent Patrons\n"
-                    + "\t7. Find Part Time Librarians");
+                System.out.print("Enter Your Response: ");
 
-            System.out.print("Enter Your Response: ");
+                try {
+                    inputInt = Integer.parseInt(reader.nextLine());
+                } catch (NumberFormatException e) {
+                    System.err.println("Enter a number.");
+                }
+            } while (inputInt == 0);
 
-            try {
-                inputInt = Integer.parseInt(reader.nextLine());
+            switch (inputInt) {
+
+                case 1:
+                    addItem();
+                    break;
+                case 2:
+                    removeItem();
+                    break;
+                case 3:
+                    clearWaitlists();
+                    break;
+                case 4:
+                    editPersonalInformation(librarianID);
+                    break;
+                case 5:
+                    viewOverdueBooks();
+                    break;
+                case 6:
+                    viewDelinquentPatrons();
+                    break;
+                case 7:
+                    findPartTimeLibrarians();
+                    break;
+                default:
+                    System.out.println("Error: Not a valid number. Quitting. \t Thank you for using the system.");
+                    return false;
+
             }
-            catch (NumberFormatException e){
-                System.err.println("Enter a number.");
-            }
-        }while (inputInt == 0);
-		
-		switch(inputInt){
-		
-		case 1:
-			addItem();
-			break;
-		case 2:
-			removeItem();
-			break;
-		case 3:
-			clearWaitlists();
-			break;
-		case 4:
-			editPersonalInformation();
-			break;
-		case 5:
-			viewOverdueBooks();
-			break;
-		case 6:
-			viewDelinquentPatrons();
-			break;
-		case 7:
-			findPartTimeLibrarians();
-			break;
-		default:
-			System.out.println("Error: Not a valid number. Quitting. \t Thank you for using the system.");
-			return false;
-		
-		}
+        }while(inputInt > 0 && inputInt <= 7);
 		
 		return true;
 	}
@@ -209,9 +210,10 @@ public class View {
 	public void clearWaitlists(){
 		
 	}
-	public void editPersonalInformation(){
+	public void editPersonalInformation(int userID){
 	
 	}
+
 	public void viewOverdueBooks(){
 		/*
 		 * our original query didn't work because it was trying to find book name when it wasn't stored in checkout
@@ -479,13 +481,14 @@ public class View {
 
 
 	}
-	public void checkOutItem(){
+	public void checkOutItem(int patronID){
+
 		
 	}
-	public void placeHoldOnItem(){
+	public void placeHoldOnItem(int patronID){
 		
 	}
-	public void removeHoldOnItem(){
+	public void removeHoldOnItem(int patronID){
 		/*
 		 * might be better(/necessary) to ask them for their userId when logging in
 		 * Also, this one doesn't actually tell you if it worked or not. If you do one with an end date < today, it'll still say updated
@@ -543,19 +546,19 @@ public class View {
 			searchForItems();
 			break;
 		case 2:
-			editPersonalInformation();
+			editPersonalInformation(patronID);
 			break;
 		case 3:
 			renewItem(patronID);
 			break;
 		case 4:
-			checkOutItem();
+			checkOutItem(patronID);
 			break;
 		case 5:
-			placeHoldOnItem();
+			placeHoldOnItem(patronID);
 			break;
 		case 6:
-			removeHoldOnItem();
+			removeHoldOnItem(patronID);
 			break;
 		default:
 			System.out.println("Error: Not a valid number");
