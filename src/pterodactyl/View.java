@@ -761,14 +761,14 @@ public class View {
                 " order by position asc";
 
         String s_queryUpdateCheckout = "Insert into checkout " +
-                "(PATRONID, DEWEYID, ITEMNUMBER, BEGINNINGDATE, ENDDATE, DUEDATE)" +
+                "(PATRONID, DEWEYID, ITEMNUMBER, BEGINNINGDATE, ENDDATE, DUEDATE) " +
                 "values (" + patronID + ", " + itemDeweyID + ", " + itemNumber + ", " +
-                "curDate(), null, DATEADD(week,2,CURRENT_TIMESTAMP)";
+                "curDate(), null, DATEADD(week ,2 ,CURRENT_TIMESTAMP))";
         String s_queryChangeHolds = "Update checkout set position = position - 1 where " +
                 "deweyID = " + itemDeweyID +
                 " and itemnumber = " + itemNumber +
                 " and endDate is null";
-        String s_queryRemoveHold = "Update checkout set endDate = curDate() where " +
+        String s_queryRemoveHold = "Update holds set endDate = curDate() where " +
                 "deweyID = " + itemDeweyID +
                 " and itemnumber = " + itemNumber +
                 " and patronID = " + patronID +
@@ -786,7 +786,10 @@ public class View {
                 res = stmt.executeQuery(s_queryFindACheckOut);
                 if (res.next() == false){
                     res = stmt.executeQuery(s_queryFindNumberItems);
-                    numberOfItems = res.getInt(1);
+                    if (res.next())
+                    	numberOfItems = res.getInt(1);
+                    else
+                    	System.err.println("1 error");
                     res = stmt.executeQuery(s_queryItemLimit);
                     res.next();
                     if (numberOfItems < res.getInt(1))
@@ -898,9 +901,9 @@ public class View {
         int count = 1;
 
         String s_queryAddHold = "Insert into holds " +
-                "(PATRONID, DEWEYID, ITEMNUMBER, ENDDATE, POSITION)" +
+                "(PATRONID, DEWEYID, ITEMNUMBER, ENDDATE, POSITION, CREATEDATE)" +
                 " values (" + patronID + ", " + itemDeweyID + ", " + itemNumber + ", " +
-                " null, " + count + ")";
+                " null, " + count + ", curDate())";
 
         Statement stmt;
 
