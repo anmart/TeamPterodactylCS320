@@ -90,7 +90,8 @@ public class View {
                         } while (session);
 					break;
 				default:
-					System.out.println("Thank you for using our system. Have a nice day");
+					//Nothing?
+                    break;
 
 			}
 		} catch (SQLException e) {
@@ -107,7 +108,7 @@ public class View {
 			e.printStackTrace();
 		}
 
-
+        System.out.println("Thank you for using our system. Have a nice day");
 
 
 
@@ -375,7 +376,13 @@ public class View {
      */
 
     public boolean PatronOptions(int patronID){
-        System.out.println("Welcome to Team Pterosaur\'s Library System. What would you like to do?\n\n"
+
+        int inputInt;
+        System.out.println("Welcome to Team Pterosaur's Library System.");
+        do {
+            //reset the input int
+            inputInt = 0;
+            System.out.println("What would you like to do now?\n\n"
                 + "\t1. Search For Items\n"
                 + "\t2. Edit Personal Information\n"
                 + "\t3. Renew an Item\n"
@@ -383,14 +390,11 @@ public class View {
                 + "\t5. Place Hold On Item\n"
                 + "\t6. Remove Hold on Item\n\t7. Quit");
 
-
-
-        int inputInt = 0;
-        do {
             while (inputInt == 0) {
                 System.out.print("Enter Your Response: ");
                 try {
                     inputInt = Integer.parseInt(reader.nextLine());
+                    //System.out.println("THIS SWAMP " + inputInt);
                     if (inputInt == 0)
                         inputInt = -1;
                 } catch (NumberFormatException e) {
@@ -422,6 +426,8 @@ public class View {
                     return false;
                 default:
                     System.out.println("Enter a valid choice.");
+                    inputInt = 1; // reset to 1 to keep the while loop going
+                    break;
 
             }
         } while (inputInt >= 1 && inputInt <= 7);
@@ -470,6 +476,8 @@ public class View {
 
                     try {
                         pin = Integer.parseInt(reader.nextLine());
+                        if (pin == -1)
+                            return -1;
 
                         s_queryPatron = "Select ID from user where ID = " + inputInt + " and PIN = " + pin;
 
@@ -550,7 +558,7 @@ public class View {
             try {
                 substring = Integer.parseInt(reader.nextLine());
                 if (substring != 1 && substring != 2)
-                    System.out.print("Defaulting to No.");
+                    System.out.println("Defaulting to No.");
             }
             catch (NumberFormatException e){
                 System.out.println("Enter a number.");
@@ -560,7 +568,7 @@ public class View {
 		boolean useSubstring = substring == 1;
 
 		System.out.println("Enter your search term: ");
-		String titleQuery = reader.next();
+		String titleQuery = reader.nextLine();
 		if(useSubstring)
 			titleQuery = "%" + titleQuery + "%";
 
