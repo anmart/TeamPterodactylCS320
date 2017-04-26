@@ -27,6 +27,8 @@ public class View {
 			// Connect to the database first
 			// If it doesn't connect at all, then just exit the program
 
+            boolean session;
+
 			String url = "jdbc:h2:~\\Documents\\GitHub\\database\\TeamPterodactylCS320\\test";
 			Class.forName("org.h2.Driver");
 			conn = DriverManager.getConnection(url,
@@ -66,7 +68,9 @@ public class View {
                     } while(login == 0);
 
                     if (login > 0) //You logined! else you quit
-					    LibrarianOptions(login);
+                        do {
+                            session = LibrarianOptions(login);
+                        } while(session);
 
 					break;
 				case 2:
@@ -78,8 +82,12 @@ public class View {
                         login = PatronLogin();
                     } while(login == 0);
 
+
+
                     if (login > 0) //You logined! else you quit
-                        PatronOptions(login);
+                        do {
+                            session = PatronOptions(login);
+                        } while (session);
 					break;
 				default:
 					System.out.println("Thank you for using our system. Have a nice day");
@@ -155,6 +163,7 @@ public class View {
 
 	public boolean LibrarianOptions(int librarianID){
 
+        // This shouldn't quit after the user enters a bad number
         int inputInt = 0;
         do {
             // Added error checking for when the user doesn't enter a number
@@ -201,7 +210,7 @@ public class View {
                     findPartTimeLibrarians();
                     break;
                 default:
-                    System.out.println("Error: Not a valid number. Quitting. \t Thank you for using the system.");
+                    System.out.println("Not a valid choice. Quitting. \t Thank you for using the system.");
                     return false;
 
             }
@@ -372,44 +381,50 @@ public class View {
                 + "\t3. Renew an Item\n"
                 + "\t4. Check Out Item\n"
                 + "\t5. Place Hold On Item\n"
-                + "\t6. Remove Hold on Item");
+                + "\t6. Remove Hold on Item\n\t7. Quit");
 
-        System.out.println("Enter Your Response: ");
+
 
         int inputInt = 0;
-        while(inputInt == 0) {
-            try {
-                inputInt = Integer.parseInt(reader.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println();
+        do {
+            while (inputInt == 0) {
+                System.out.print("Enter Your Response: ");
+                try {
+                    inputInt = Integer.parseInt(reader.nextLine());
+                    if (inputInt == 0)
+                        inputInt = -1;
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a number.");
+                }
             }
-        }
 
-        switch(inputInt){
+            switch (inputInt) {
 
-            case 1:
-                searchForItems();
-                break;
-            case 2:
-                editPersonalInformation(patronID);
-                break;
-            case 3:
-                renewItem(patronID);
-                break;
-            case 4:
-                checkOutItem(patronID);
-                break;
-            case 5:
-                placeHoldOnItem(patronID);
-                break;
-            case 6:
-                removeHoldOnItem(patronID);
-                break;
-            default:
-                System.out.println("Error: Not a valid number");
-                return false;
+                case 1:
+                    searchForItems();
+                    break;
+                case 2:
+                    editPersonalInformation(patronID);
+                    break;
+                case 3:
+                    renewItem(patronID);
+                    break;
+                case 4:
+                    checkOutItem(patronID);
+                    break;
+                case 5:
+                    placeHoldOnItem(patronID);
+                    break;
+                case 6:
+                    removeHoldOnItem(patronID);
+                    break;
+                case 7:
+                    return false;
+                default:
+                    System.out.println("Enter a valid choice.");
 
-        }
+            }
+        } while (inputInt >= 1 && inputInt <= 7);
 
         return true;
     }
@@ -427,7 +442,7 @@ public class View {
                 inputInt = Integer.parseInt(reader.nextLine());
 
                 if (inputInt <= 0 && inputInt != -1){
-                    System.out.println("That's not a valid ID.");
+                    System.out.println("Enter a valid ID.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Enter a number.");
@@ -469,7 +484,7 @@ public class View {
                         }
 
                     } catch (NumberFormatException e) {
-                        System.out.println("That's not a valid PIN");
+                        System.out.println("Enter a valid PIN");
                     }
 
                 } else
@@ -509,7 +524,7 @@ public class View {
                     "\t4. Genre\n" +
                     "\t5. DeweyID\n");
 
-            System.out.println("Enter Your Response: ");
+            System.out.print("Enter Your Response: ");
 
             try {
                 inputInt = Integer.parseInt(reader.nextLine());
@@ -519,7 +534,7 @@ public class View {
             }
 
             if (inputInt > 5 || inputInt < 1){
-                System.out.println("Please enter a valid number.");
+                System.out.println("Enter a valid choice.");
             }
         }while (inputInt == 0);
 
@@ -709,7 +724,7 @@ public class View {
             }
 
             if (itemDeweyID < 0 && itemDeweyID != -1){
-                System.out.println("Enter a valid number (greater than zero or -1).");
+                System.out.println("Enter a valid number (valid Dewey ID or -1).");
                 itemDeweyID = 0;
             }
 
