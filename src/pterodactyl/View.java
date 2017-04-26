@@ -517,33 +517,40 @@ public class View {
     /**
      * searchForItems
      * A user can search for items through search terms like
-     * author, director, year, genre, or deweyID
+     * author, director, year, genre, or deweyID or title
      * Will output the search results
      */
 	public void searchForItems(){
         int inputInt = 0;
+        boolean valid = false;
 
         // Added error checking for when the user doesn't enter a number
-        do{
+        do {
             System.out.println("Search by\n" +
                     "\t1. Author\n" +
                     "\t2. Director\n" +
                     "\t3. Year\n" +
                     "\t4. Genre\n" +
-                    "\t5. DeweyID\n");
+                    "\t5. DeweyID\n" +
+                    "\t6. Title\n");
 
             System.out.print("Enter Your Response: ");
 
-            try {
-                inputInt = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
-                System.out.println("Enter a number.");
+            while (!valid) {
+                try {
+                    inputInt = Integer.parseInt(reader.nextLine());
+                    valid = true;
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a number.");
+                }
+
             }
 
-            if (inputInt > 5 || inputInt < 1){
+            if (inputInt > 6 || inputInt < 1){
                 System.out.println("Enter a valid choice.");
+                inputInt = 0;
             }
+
         }while (inputInt == 0);
 
 
@@ -573,25 +580,33 @@ public class View {
 			titleQuery = "%" + titleQuery + "%";
 
 		String whereClause = "";
+		String column = "";
 		switch(inputInt){
             case 1:
-                whereClause = "natural join book where author like '";
+                whereClause = "natural join book where author like \'";
+                column = ", author ";
                 break;
             case 2:
-                whereClause = "natural join DVD where director like '";
+                whereClause = "natural join DVD where director like \'";
+                column = ", director ";
                 break;
             case 3:
-                whereClause = "where year like '";
+                whereClause = "where year like \'";
+                column = ", year";
                 break;
             case 4:
-                whereClause = "where genre like '";
+                whereClause = "where genre like \'";
+                column = ", genre ";
                 break;
             case 5:
-                whereClause = "where deweyID like '";
+                whereClause = "where deweyID like \'";
+                break;
+            case 6:
+                whereClause = "where title like \'";
                 break;
         }
-		String s_queryItems = "Select deweyID, ItemNumber, title from item " + whereClause + titleQuery +
-                "\' group by deweyID";
+		String s_queryItems = "Select item.deweyID, item.ItemNumber, title" + column + " from item " + whereClause + titleQuery +
+                "\' group by item.deweyID";
 		// group by will make sure the same books will stick together
         // it'd be really weird if Book A copy 1 and Book A copy 2 were far apart
 
@@ -601,12 +616,25 @@ public class View {
 			stmt = conn.createStatement();
 			ResultSet res = stmt.executeQuery(s_queryItems);
 
+			int columnNumber;
 			if (res.next() == false)
 				System.out.println("No items found.");
 			else {
-				System.out.println(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
+			    columnNumber = res.getMetaData().getColumnCount();
+				//System.out.print(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
+                System.out.print(res.getRow() + ". \t");
+                for (int i = 1; i <= columnNumber; i++){
+				    System.out.print(res.getString(i) + "\t");
+                }
+                System.out.print("\n");
+
 				while (res.next()) {
-					System.out.println(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
+					//System.out.println(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
+                    System.out.print(res.getRow() + ". \t");
+                    for (int i = 1; i <= columnNumber; i++){
+                        System.out.print(res.getString(i) + "\t");
+                    }
+                    System.out.print("\n");
 				}
 			}
 
