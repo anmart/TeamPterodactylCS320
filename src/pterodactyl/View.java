@@ -19,7 +19,8 @@ public class View {
 
     Scanner reader;
     Connection conn;
-    public View(){
+
+    public View() {
         reader = new Scanner(System.in);
 
         try {
@@ -38,7 +39,7 @@ public class View {
             int inputInt = 0;
 
             // Added error checking for when the user doesn't enter a number
-            do{
+            do {
                 System.out.println("Log in as:\n"
                         + "\t1. Librarian\n"
                         + "\t2. Patron\n"
@@ -48,40 +49,38 @@ public class View {
 
                 try {
                     inputInt = Integer.parseInt(reader.nextLine());
-                }
-                catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     System.out.println("Enter a number.");
                 }
-            }while (inputInt == 0);
+            } while (inputInt == 0);
 
             // Need to implement login with ID after selecting what type of user you are
             int login;
-            switch(inputInt){
+            switch (inputInt) {
                 case 1:
 
                     // Keep looping till login successful or user quits
-                    do{
+                    do {
                         // Login is either  0 - Not Found
                         //                  -1 - Cancel
                         //                  ID Number
                         login = LibrarianLogin();
-                    } while(login == 0);
+                    } while (login == 0);
 
                     if (login > 0) //You logined! else you quit
                         do {
                             session = LibrarianOptions(login);
-                        } while(session);
+                        } while (session);
 
                     break;
                 case 2:
                     // Keep looping till login successful or user quits
-                    do{
+                    do {
                         // Login is either  0 - Not Found
                         //                  -1 - Cancel
                         //                  ID Number
                         login = PatronLogin();
-                    } while(login == 0);
-
+                    } while (login == 0);
 
 
                     if (login > 0) //You logined! else you quit
@@ -101,8 +100,7 @@ public class View {
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             System.out.print("Unhandled error");
             e.printStackTrace();
@@ -111,15 +109,15 @@ public class View {
         System.out.println("Thank you for using our system. Have a nice day");
 
 
-
     }
 
     /**
      * LibrarianLogin
      * How a person logins as a librarian
+     *
      * @return if user login correctly
      */
-    public int LibrarianLogin(){
+    public int LibrarianLogin() {
         System.out.print("Enter your ID (Enter -1 to cancel): ");
         int inputInt = reader.nextInt();
         boolean found = false;
@@ -159,10 +157,11 @@ public class View {
     /**
      * LibrarianOptions
      * How the librarian can perform their duties
+     *
      * @return true
      */
 
-    public boolean LibrarianOptions(int librarianID){
+    public boolean LibrarianOptions(int librarianID) {
 
         // This shouldn't quit after the user enters a bad number
         int inputInt = 0;
@@ -215,17 +214,18 @@ public class View {
                     return false;
 
             }
-        }while(inputInt > 0 && inputInt <= 7);
+        } while (inputInt > 0 && inputInt <= 7);
 
         return true;
     }
 
 
-    public void addItem(){
+    public void addItem() {
     }
-    public void removeItem(){
-		/* Not 100% certain this is the proper way to do it,
-		 * but I'm just removing the item from every table
+
+    public void removeItem() {
+        /* Not 100% certain this is the proper way to do it,
+         * but I'm just removing the item from every table
 		 * it can possibly show in
 		 */
         System.out.println("Please enter Dewey ID");
@@ -253,9 +253,9 @@ public class View {
         }
 
 
-
     }
-    public void clearWaitlists(){
+
+    public void clearWaitlists() {
         System.out.println("Please enter Dewey ID");
         int dewey = reader.nextInt();
         System.out.println("Please enter Item Number");
@@ -281,9 +281,10 @@ public class View {
     /**
      * Edit Personal Information
      * A user will be edit their Name or PIN
+     *
      * @param userID
      */
-    public void editPersonalInformation(int userID){
+    public void editPersonalInformation(int userID) {
         int inputInt = 0;
         boolean valid = false;
 
@@ -307,21 +308,20 @@ public class View {
 
             }
 
-            if (inputInt > 3 || inputInt < 1){
+            if (inputInt > 3 || inputInt < 1) {
                 System.out.println("Enter a valid choice.");
                 inputInt = 0;
             }
 
-        }while (inputInt == 0);
+        } while (inputInt == 0);
 
         String newInfo = "";
 
-        try{
+        try {
             Statement stmt;
             String s_queryUser = "Select NAME from user where ID = " + userID;
             stmt = conn.createStatement();
             ResultSet res = stmt.executeQuery(s_queryUser);
-
 
 
             if (res.next() == false)
@@ -375,13 +375,13 @@ public class View {
                 }
             }
 
-            } catch (SQLException e){
-                System.out.println("Error with the SQL " + e.toString());
-            }
-
+        } catch (SQLException e) {
+            System.out.println("Error with the SQL " + e.toString());
         }
 
-    public void viewOverdueBooks(){
+    }
+
+    public void viewOverdueBooks() {
 		/*
 		 * our original query didn't work because it was trying to find book name when it wasn't stored in checkout
 		 * we have to merge with checkout and make this a bit more complex
@@ -389,7 +389,7 @@ public class View {
         String s_createView = "Create Or Replace view overdue_books "
                 + "As select deweyid, itemnumber "
                 + "From checkout "
-                + "Where endDate is null and dueDate < curDate()" ;
+                + "Where endDate is null and dueDate < curDate()";
         String s_queryView = "Select * From overdue_books";
 
 
@@ -399,11 +399,9 @@ public class View {
             stmt.execute(s_createView);
             ResultSet res = stmt.executeQuery(s_queryView);
 
-            while(res.next()){
+            while (res.next()) {
                 System.out.println("\t" + res.getInt(1) + "\t" + res.getInt(2));
             }
-
-
 
 
         } catch (SQLException e) {
@@ -412,14 +410,15 @@ public class View {
         }
 
     }
-    public void viewDelinquentPatrons(){
+
+    public void viewDelinquentPatrons() {
         /** Get's the name of the deliquent patrons
          * By looking for names of patrons who have overdue books
          */
 
         String s_queryView = "select name, ID " +
                 "from user " +
-                "where ID in (select distinct patronID "  +
+                "where ID in (select distinct patronID " +
                 "from checkout " +
                 "where endDate is null and dueDate < curDate())";
 
@@ -429,11 +428,9 @@ public class View {
             //stmt.execute(s_createView);
             ResultSet res = stmt.executeQuery(s_queryView);
 
-            while(res.next()){
+            while (res.next()) {
                 System.out.println("\t" + res.getString(1) + "\t\t\t" + res.getString(2));
             }
-
-
 
 
         } catch (SQLException e) {
@@ -441,7 +438,8 @@ public class View {
             e.printStackTrace();
         }
     }
-    public void findPartTimeLibrarians(){
+
+    public void findPartTimeLibrarians() {
         // Get the name and hours per week of part time Librarians
         String s_queryLibrarians = "Select name, hoursPerWeek from librarian inner join user on userid = id " +
                 "" +
@@ -454,11 +452,9 @@ public class View {
             ResultSet res = stmt.executeQuery(s_queryLibrarians);
 
             System.out.printf("%-10s %-10s\n", "name", "Hours Per Week");
-            while(res.next()){
+            while (res.next()) {
                 System.out.println("\t" + res.getString(1) + "\t" + res.getInt(2));
             }
-
-
 
 
         } catch (SQLException e) {
@@ -471,11 +467,12 @@ public class View {
     /**
      * PatronOptions
      * How the patron interacts with the system
+     *
      * @param patronID the patron currently login in userID
      * @return true
      */
 
-    public boolean PatronOptions(int patronID){
+    public boolean PatronOptions(int patronID) {
 
         int inputInt;
         System.out.println("Welcome to Team Pterosaur's Library System.");
@@ -488,7 +485,9 @@ public class View {
                     + "\t3. Renew an Item\n"
                     + "\t4. Check Out Item\n"
                     + "\t5. Place Hold On Item\n"
-                    + "\t6. Remove Hold on Item\n\t7. Quit");
+                    + "\t6. Remove Hold on Item\n"
+                    + "\t7. Return Item\n"
+                    + "\t8. Quit");
 
             while (inputInt == 0) {
                 System.out.print("Enter Your Response: ");
@@ -523,6 +522,9 @@ public class View {
                     removeHoldOnItem(patronID);
                     break;
                 case 7:
+                    returnItem(patronID);
+                    break;
+                case 8:
                     return false;
                 default:
                     System.out.println("Enter a valid choice.");
@@ -530,7 +532,7 @@ public class View {
                     break;
 
             }
-        } while (inputInt >= 1 && inputInt <= 7);
+        } while (inputInt >= 1 && inputInt <= 8);
 
         return true;
     }
@@ -538,16 +540,17 @@ public class View {
     /**
      * PatronLogin
      * How a person logins as a patron
+     *
      * @return userID if user login correctly, -1 if the user cancels, 0 user failed
      */
-    public int PatronLogin(){
+    public int PatronLogin() {
         System.out.print("Enter your ID (Enter -1 to cancel): ");
         int inputInt = 0;
         while (inputInt == 0) {
             try {
                 inputInt = Integer.parseInt(reader.nextLine());
 
-                if (inputInt <= 0 && inputInt != -1){
+                if (inputInt <= 0 && inputInt != -1) {
                     System.out.println("Enter a valid ID.");
                 }
             } catch (NumberFormatException e) {
@@ -620,7 +623,7 @@ public class View {
      * author, director, year, genre, or deweyID or title
      * Will output the search results
      */
-    public void searchForItems(){
+    public void searchForItems() {
         int inputInt = 0;
         boolean valid = false;
 
@@ -646,16 +649,16 @@ public class View {
 
             }
 
-            if (inputInt > 6 || inputInt < 1){
+            if (inputInt > 6 || inputInt < 1) {
                 System.out.println("Enter a valid choice.");
                 inputInt = 0;
             }
 
-        }while (inputInt == 0);
+        } while (inputInt == 0);
 
 
         int substring = 0;
-        do{
+        do {
             System.out.println("Use Search Term as Substring?\n"
                     + "\t1. Yes\n"
                     + "\t2. No\n");
@@ -666,22 +669,21 @@ public class View {
                 substring = Integer.parseInt(reader.nextLine());
                 if (substring != 1 && substring != 2)
                     System.out.println("Defaulting to No.");
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Enter a number.");
             }
-        }while (substring == 0);
+        } while (substring == 0);
 
         boolean useSubstring = substring == 1;
 
         System.out.println("Enter your search term: ");
         String titleQuery = reader.nextLine();
-        if(useSubstring)
+        if (useSubstring)
             titleQuery = "%" + titleQuery + "%";
 
         String whereClause = "";
         String column = "";
-        switch(inputInt){
+        switch (inputInt) {
             case 1:
                 whereClause = "natural join book where author like \'";
                 column = ", author ";
@@ -723,7 +725,7 @@ public class View {
                 columnNumber = res.getMetaData().getColumnCount();
                 //System.out.print(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
                 System.out.print(res.getRow() + ". \t");
-                for (int i = 1; i <= columnNumber; i++){
+                for (int i = 1; i <= columnNumber; i++) {
                     System.out.print(res.getString(i) + "\t");
                 }
                 System.out.print("\n");
@@ -731,7 +733,7 @@ public class View {
                 while (res.next()) {
                     //System.out.println(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
                     System.out.print(res.getRow() + ". \t");
-                    for (int i = 1; i <= columnNumber; i++){
+                    for (int i = 1; i <= columnNumber; i++) {
                         System.out.print(res.getString(i) + "\t");
                     }
                     System.out.print("\n");
@@ -747,58 +749,70 @@ public class View {
     /**
      * renewItem
      * A patron can renew an item they currently have checked out if it's not overdue or has a waiting list
+     *
      * @param patronID
      */
-    public void renewItem(int patronID){
+    public void renewItem(int patronID) {
         int inputInt = 0;
         int itemNumber = 0;
-
-        // Added error checking for when the user doesn't enter a number
-        do{
-            System.out.println("Enter the dewey ID of the item you want to renew: ");
-
-            try {
-                inputInt = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
-                System.out.println("Enter a number.");
-            }
-
-            System.out.println("Enter the item number of the item you want to renew: ");
-
-            try {
-                itemNumber = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
-                System.out.println("Enter a number.");
-            }
-
-        }while (inputInt == 0 || itemNumber == 0);
-
-        String s_queryFindItem = "Select deweyID, itemnumber from item where " +
-                "deweyID = " + inputInt +
-                " and itemnumber = " + itemNumber;
-
-        String s_queryFindYourCheckOut = "Select endDate, dueDate from checkout where " +
-                "deweyID = " + inputInt +
-                " and itemnumber = " + itemNumber +
-                " and patronID = " + patronID +
-                " endDate is null";
-
-        String s_queryFindOtherHolds = "Select * from holds where " +
-                "deweyID = " + inputInt +
-                " and itemnumber = " + itemNumber +
-                " and patronID != " + patronID; //Not sure if patronId check is neccessary
-
-        String s_queryUpdateCheckout = "Update checkout set dueDate = DATEADD(week,2,CURRENT_TIMESTAMP) " +
-                "deweyID = " + inputInt +
-                " and itemnumber = " + itemNumber +
-                " and patronID = " + patronID + " and endDate is not null";
-
-        Statement stmt;
         try {
+            Statement stmt;
+
             stmt = conn.createStatement();
-            ResultSet res = stmt.executeQuery(s_queryFindItem);
+
+            String s_queryItemOut = "Select title, item.deweyID, item.itemnumber, dueDate " +
+                    "from checkout natural join item where patronID = " + patronID +
+                    " and endDate is null";
+            ResultSet res = stmt.executeQuery(s_queryItemOut);
+
+
+            while (res.next()) {
+                System.out.println("Current Item Out: " + res.getString(1) + "\t" + res.getInt(2)
+                        + "\t" + res.getInt(3) + "\tDue Date: " + res.getString(4));
+
+            }
+
+            do {
+                System.out.println("Enter the dewey ID of the item you want to renew: ");
+
+                try {
+                    inputInt = Integer.parseInt(reader.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a number.");
+                }
+
+                System.out.println("Enter the item number of the item you want to renew: ");
+
+                try {
+                    itemNumber = Integer.parseInt(reader.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a number.");
+                }
+
+            } while (inputInt == 0 || itemNumber == 0);
+
+            String s_queryFindItem = "Select deweyID, itemnumber from item where " +
+                    "deweyID = " + inputInt +
+                    " and itemnumber = " + itemNumber;
+
+            String s_queryFindYourCheckOut = "Select endDate, dueDate from checkout where " +
+                    "deweyID = " + inputInt +
+                    " and itemnumber = " + itemNumber +
+                    " and patronID = " + patronID +
+                    " and endDate is null";
+
+            String s_queryFindOtherHolds = "Select * from holds where " +
+                    "deweyID = " + inputInt +
+                    " and itemnumber = " + itemNumber +
+                    " and patronID != " + patronID; //Not sure if patronId check is neccessary
+
+            String s_queryUpdateCheckout = "Update checkout set dueDate = DATEADD(week,2,CURRENT_TIMESTAMP) " +
+                    "deweyID = " + inputInt +
+                    " and itemnumber = " + itemNumber +
+                    " and patronID = " + patronID + " and endDate is not null";
+
+
+            res = stmt.executeQuery(s_queryFindItem);
 
             if (res.next() == false)
                 System.out.println("No item found. Make sure the deweyID of " + inputInt + " and the itemnumber of " +
@@ -819,8 +833,7 @@ public class View {
                     if (resFindBookStatus.next() == false) {
                         //update the checkout
                         stmt.executeQuery(s_queryUpdateCheckout);
-                    }
-                    else{
+                    } else {
                         // another user has a hold on this item
                         System.out.println("This item has existing hold(s). You cannot renew it.");
                     }
@@ -834,32 +847,28 @@ public class View {
         }
 
 
-
     }
 
     /**
-     * checkOutItem
-     * A patron can check out an item if all these conditions are met
-     * 1. Item is not currently checked out
-     * 2. Item has either no waiting list or Patron's hold is number one on the waitlist
-     * 3. Patron has not checked out max number of books
+     * returnItem
+     * A patron can return an item they current have checked out
+     *
      * @param patronID
      */
-    public void checkOutItem(int patronID){
+    public void returnItem(int patronID) {
         int itemDeweyID = 0;
         int itemNumber = 0;
 
         // get valid input
-        while (itemDeweyID == 0){
+        while (itemDeweyID == 0) {
             try {
                 System.out.println("Please Enter Item Dewey ID (or -1 to cancel):\n");
                 itemDeweyID = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Enter a valid number.");
             }
 
-            if (itemDeweyID < 0 && itemDeweyID != -1){
+            if (itemDeweyID < 0 && itemDeweyID != -1) {
                 System.out.println("Enter a valid number (valid Dewey ID or -1).");
                 itemDeweyID = 0;
             }
@@ -873,16 +882,113 @@ public class View {
         }
 
         // get valid input
-        while (itemNumber == 0){
+        while (itemNumber == 0) {
             try {
                 System.out.println("Please Enter Item Number (or -1 to cancel):\n");
                 itemNumber = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Enter a valid number.");
             }
 
-            if (itemNumber < 0 && itemNumber != -1){
+            if (itemNumber < 0 && itemNumber != -1) {
+                System.out.println("Enter a valid number (greater than zero or -1).");
+                itemNumber = 0;
+            }
+        }
+
+        // Did the user cancel
+        if (itemNumber == -1) {
+            System.out.println("Returning back to the menu.");
+            return;
+        }
+
+        String s_queryFindACheckOut = "Select endDate, dueDate from checkout where " +
+                "deweyID = " + itemDeweyID +
+                " and itemnumber = " + itemNumber + "and patronID = " + patronID +
+                " and endDate is null";
+
+        String s_queryRemoveCheckout = "Update checkout endDate = curDate() where " +
+                "deweyID = " + itemDeweyID +
+                " and itemnumber = " + itemNumber + "and patronID = " + patronID +
+                " and endDate is null";
+
+        String s_queryExists = "Select * from item where " +
+                "deweyID = " + itemDeweyID +
+                " and itemnumber = " + itemNumber;
+
+        Statement stmt;
+
+        try {
+            stmt = conn.createStatement();
+            // Does this item exist
+            ResultSet res = stmt.executeQuery(s_queryExists);
+
+            if (res.next() == true) {
+                // Is this currently checked out by the user
+                res = stmt.executeQuery(s_queryFindACheckOut);
+                if (res.next() == true) {
+                    // End the checkout
+                    stmt.executeQuery(s_queryRemoveCheckout);
+
+                } else
+                    System.out.println("This item is not currently checked out by you");
+
+            } else
+                System.out.println("This item doesn't exist.");
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+    }
+
+    /**
+     * checkOutItem
+     * A patron can check out an item if all these conditions are met
+     * 1. Item is not currently checked out
+     * 2. Item has either no waiting list or Patron's hold is number one on the waitlist
+     * 3. Patron has not checked out max number of books
+     *
+     * @param patronID
+     */
+    public void checkOutItem(int patronID) {
+        int itemDeweyID = 0;
+        int itemNumber = 0;
+
+        // get valid input
+        while (itemDeweyID == 0) {
+            try {
+                System.out.println("Please Enter Item Dewey ID (or -1 to cancel):\n");
+                itemDeweyID = Integer.parseInt(reader.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Enter a valid number.");
+            }
+
+            if (itemDeweyID < 0 && itemDeweyID != -1) {
+                System.out.println("Enter a valid number (valid Dewey ID or -1).");
+                itemDeweyID = 0;
+            }
+
+        }
+
+        // did the user quit
+        if (itemDeweyID == -1) {
+            System.out.println("Returning back to the menu.");
+            return;
+        }
+
+        // get valid input
+        while (itemNumber == 0) {
+            try {
+                System.out.println("Please Enter Item Number (or -1 to cancel):\n");
+                itemNumber = Integer.parseInt(reader.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Enter a valid number.");
+            }
+
+            if (itemNumber < 0 && itemNumber != -1) {
                 System.out.println("Enter a valid number (greater than zero or -1).");
                 itemNumber = 0;
             }
@@ -908,7 +1014,7 @@ public class View {
         String s_queryFindOtherHolds = "Select patronID, position from holds where " +
                 "deweyID = " + itemDeweyID +
                 " and itemnumber = " + itemNumber +
-                " and patronID != " + patronID  + //Not sure if patronId check is neccessary
+                " and patronID != " + patronID + //Not sure if patronId check is neccessary
                 " and endDate is null" +
                 " order by position asc";
 
@@ -916,7 +1022,7 @@ public class View {
                 "(PATRONID, DEWEYID, ITEMNUMBER, BEGINNINGDATE, ENDDATE, DUEDATE) " +
                 "values (" + patronID + ", " + itemDeweyID + ", " + itemNumber + ", " +
                 "curDate(), null, DATEADD(week ,2 ,CURRENT_TIMESTAMP))";
-        String s_queryChangeHolds = "Update checkout set position = position - 1 where " +
+        String s_queryChangeHolds = "Update holds set position = position - 1 where " +
                 "deweyID = " + itemDeweyID +
                 " and itemnumber = " + itemNumber +
                 " and endDate is null";
@@ -936,7 +1042,7 @@ public class View {
 
             if (res.next() == true) {
                 res = stmt.executeQuery(s_queryFindACheckOut);
-                if (res.next() == false){
+                if (res.next() == false) {
                     res = stmt.executeQuery(s_queryFindNumberItems);
                     if (res.next())
                         numberOfItems = res.getInt(1);
@@ -944,32 +1050,27 @@ public class View {
                         System.err.println("1 error");
                     res = stmt.executeQuery(s_queryItemLimit);
                     res.next();
-                    if (numberOfItems < res.getInt(1))
-                    {
+                    if (numberOfItems < res.getInt(1)) {
                         res = stmt.executeQuery(s_queryFindOtherHolds);
                         if (res.next() == false)
                             stmt.execute(s_queryUpdateCheckout);
-                        else{
+                        else {
                             // check that the first hold is the patron
                             if (res.getInt(2) == patronID) {
                                 stmt.execute(s_queryUpdateCheckout); // Check out book
                                 stmt.execute(s_queryRemoveHold); // End the current hold
                                 stmt.execute(s_queryChangeHolds); // Change other positions
-                            }
-                            else{
+                            } else {
                                 System.out.println("Someone else has a hold on this book.");
                             }
                         }
-                    }
-                    else
+                    } else
                         System.out.println("You are at the limit of items checked out.");
 
 
-                }
-                else
+                } else
                     System.out.println("This item is currently checked out.");
-            }
-            else
+            } else
                 System.out.println("This item doesn't exist.");
 
         } catch (SQLException e) {
@@ -983,24 +1084,24 @@ public class View {
     /**
      * placeHoldOnItem
      * A patron can place a hold on an item
+     *
      * @param patronID - patron's user id
      */
 
-    public void placeHoldOnItem(int patronID){
+    public void placeHoldOnItem(int patronID) {
         int itemDeweyID = 0;
         int itemNumber = 0;
 
         // get valid input
-        while (itemDeweyID == 0){
+        while (itemDeweyID == 0) {
             try {
                 System.out.print("Please Enter Item Dewey ID (or -1 to cancel):");
                 itemDeweyID = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Enter a valid number.");
             }
 
-            if (itemDeweyID < 0 && itemDeweyID != -1){
+            if (itemDeweyID < 0 && itemDeweyID != -1) {
                 System.out.println("Enter a valid number (greater than zero or -1).");
                 itemDeweyID = 0;
             }
@@ -1014,16 +1115,15 @@ public class View {
         }
 
         // get valid input
-        while (itemNumber == 0){
+        while (itemNumber == 0) {
             try {
                 System.out.print("Please Enter Item Number (or -1 to cancel):");
                 itemNumber = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Enter a valid number.");
             }
 
-            if (itemNumber < 0 && itemNumber != -1){
+            if (itemNumber < 0 && itemNumber != -1) {
                 System.out.println("Enter a valid number (greater than zero or -1).");
                 itemNumber = 0;
             }
@@ -1063,7 +1163,7 @@ public class View {
                 res = stmt.executeQuery(s_queryFindYourHold);
                 // Does the patron already have a hold on this item?
 
-                if (res.next() == false){
+                if (res.next() == false) {
                     // Create a new hold for this item
                     res = stmt.executeQuery(s_count);
                     if (res.next() == true)
@@ -1075,11 +1175,9 @@ public class View {
                             " null, " + count + ", curDate())";
                     stmt.execute(s_queryAddHold);
                     System.out.println("You have a placed a hold on this item");
-                }
-                else
+                } else
                     System.out.println("You already have a hold on this item.");
-            }
-            else
+            } else
                 System.out.println("This item doesn't exist.");
 
         } catch (SQLException e) {
@@ -1093,13 +1191,16 @@ public class View {
     /**
      * RemoveHoldonItem
      * A patron can remove their hold on an item
+     *
      * @param patronID patron's user id
      */
-    public void removeHoldOnItem(int patronID){
+    public void removeHoldOnItem(int patronID) {
         int itemDeweyID = 0;
         int itemNumber = 0;
 
         Statement stmt;
+
+        // Give the patron the list of their currently active holds
         try {
             stmt = conn.createStatement();
             String s_queryActiveHolds = "Select title, item.deweyID, item.itemnumber, position " +
@@ -1108,81 +1209,75 @@ public class View {
             ResultSet res = stmt.executeQuery(s_queryActiveHolds);
 
 
-            while (res.next()){
+            while (res.next()) {
                 System.out.println("Currently Active Hold: " + res.getString(1) + "\t" + res.getInt(2)
-                        + "\t" + res.getInt(3) + "\tPosition: "  + res.getInt(4));
+                        + "\t" + res.getInt(3) + "\tPosition: " + res.getInt(4));
 
             }
 
 
+            // get valid input
+            while (itemDeweyID == 0) {
+                try {
+                    System.out.print("Please Enter Item Dewey ID (or -1 to cancel):");
+                    itemDeweyID = Integer.parseInt(reader.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a valid number.");
+                }
 
+                if (itemDeweyID < 0 && itemDeweyID != -1) {
+                    System.out.println("Enter a valid number (greater than zero or -1).");
+                    itemDeweyID = 0;
+                }
 
-        // get valid input
-        while (itemDeweyID == 0){
-            try {
-                System.out.print("Please Enter Item Dewey ID (or -1 to cancel):");
-                itemDeweyID = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
-                System.out.println("Enter a valid number.");
-            }
-
-            if (itemDeweyID < 0 && itemDeweyID != -1){
-                System.out.println("Enter a valid number (greater than zero or -1).");
-                itemDeweyID = 0;
-            }
-
-        }
-
-        // did the user quit
-        if (itemDeweyID == -1) {
-            System.out.println("Returning back to the menu.");
-            return;
-        }
-
-        // get valid input
-        while (itemNumber == 0){
-            try {
-                System.out.print("Please Enter Item Number (or -1 to cancel): ");
-                itemNumber = Integer.parseInt(reader.nextLine());
-            }
-            catch (NumberFormatException e){
-                System.out.println("Enter a valid number.");
             }
 
-            if (itemNumber < 0 && itemNumber != -1){
-                System.out.println("Enter a valid number (greater than zero or -1).");
-                itemNumber = 0;
+            // did the user quit
+            if (itemDeweyID == -1) {
+                System.out.println("Returning back to the menu.");
+                return;
             }
-        }
 
-        // Did the user cancel
-        if (itemNumber == -1) {
-            System.out.println("Returning back to the menu.");
-            return;
-        }
+            // get valid input
+            while (itemNumber == 0) {
+                try {
+                    System.out.print("Please Enter Item Number (or -1 to cancel): ");
+                    itemNumber = Integer.parseInt(reader.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a valid number.");
+                }
 
-        String s_queryHoldExists = "Select * from holds where patronID = " + patronID +  " and DeweyID = " + itemDeweyID
-                + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
+                if (itemNumber < 0 && itemNumber != -1) {
+                    System.out.println("Enter a valid number (greater than zero or -1).");
+                    itemNumber = 0;
+                }
+            }
 
-        String s_queryHoldEnd = "update holds set endDate = curDate() where patronID = " + patronID +  " and DeweyID = " + itemDeweyID
-                + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
+            // Did the user cancel
+            if (itemNumber == -1) {
+                System.out.println("Returning back to the menu.");
+                return;
+            }
 
-        String s_queryHoldUpdate = "update holds set position = position - 1 where DeweyID = " + itemDeweyID
-                + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
+            String s_queryHoldExists = "Select * from holds where patronID = " + patronID + " and DeweyID = " + itemDeweyID
+                    + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
+
+            String s_queryHoldEnd = "update holds set endDate = curDate() where patronID = " + patronID + " and DeweyID = " + itemDeweyID
+                    + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
+
+            String s_queryHoldUpdate = "update holds set position = position - 1 where DeweyID = " + itemDeweyID
+                    + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
 
 
-             res = stmt.executeQuery(s_queryHoldExists);
+            res = stmt.executeQuery(s_queryHoldExists);
 
             if (res.next() == true) {
                 stmt.execute(s_queryHoldEnd);
                 stmt.execute(s_queryHoldUpdate);
                 System.out.println("Updated hold.");
-            }
-            else{
+            } else {
                 System.out.println("Not a valid hold");
             }
-
 
 
         } catch (SQLException e) {
