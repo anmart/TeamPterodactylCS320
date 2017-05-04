@@ -993,7 +993,7 @@ public class View {
         // get valid input
         while (itemDeweyID == 0){
             try {
-                System.out.println("Please Enter Item Dewey ID (or -1 to cancel):\n");
+                System.out.print("Please Enter Item Dewey ID (or -1 to cancel):");
                 itemDeweyID = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
@@ -1016,7 +1016,7 @@ public class View {
         // get valid input
         while (itemNumber == 0){
             try {
-                System.out.println("Please Enter Item Number (or -1 to cancel):\n");
+                System.out.print("Please Enter Item Number (or -1 to cancel):");
                 itemNumber = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
@@ -1096,18 +1096,31 @@ public class View {
      * @param patronID patron's user id
      */
     public void removeHoldOnItem(int patronID){
-		/*
-		 * might be better(/necessary) to ask them for their userId when logging in
-		 * Also, this one doesn't actually tell you if it worked or not. If you do one with an end date < today, it'll still say updated
-		 * ALSO, APPARENTLY THE PATRONID AND DEWEYID GOT MESSED UP ON CREATION, THEY'RE THE SAME WHOOPS (we need to fix that)
-		 */
         int itemDeweyID = 0;
         int itemNumber = 0;
+
+        Statement stmt;
+        try {
+            stmt = conn.createStatement();
+            String s_queryActiveHolds = "Select title, item.deweyID, item.itemnumber, position " +
+                    "from holds natural join item where patronID = " + patronID +
+                    " and (endDate > curDate() or endDate is null)";
+            ResultSet res = stmt.executeQuery(s_queryActiveHolds);
+
+
+            while (res.next()){
+                System.out.println("Currently Active Hold: " + res.getString(1) + "\t" + res.getInt(2)
+                        + "\t" + res.getInt(3) + "\tPosition: "  + res.getInt(4));
+
+            }
+
+
+
 
         // get valid input
         while (itemDeweyID == 0){
             try {
-                System.out.println("Please Enter Item Dewey ID (or -1 to cancel):\n");
+                System.out.print("Please Enter Item Dewey ID (or -1 to cancel):");
                 itemDeweyID = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
@@ -1130,7 +1143,7 @@ public class View {
         // get valid input
         while (itemNumber == 0){
             try {
-                System.out.println("Please Enter Item Number (or -1 to cancel):\n");
+                System.out.print("Please Enter Item Number (or -1 to cancel): ");
                 itemNumber = Integer.parseInt(reader.nextLine());
             }
             catch (NumberFormatException e){
@@ -1157,21 +1170,26 @@ public class View {
 
         String s_queryHoldUpdate = "update holds set position = position - 1 where DeweyID = " + itemDeweyID
                 + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
-        Statement stmt;
-        try {
-            stmt = conn.createStatement();
-            ResultSet res = stmt.executeQuery(s_queryHoldExists);
+
+
+             res = stmt.executeQuery(s_queryHoldExists);
 
             if (res.next() == true) {
                 stmt.execute(s_queryHoldEnd);
                 stmt.execute(s_queryHoldUpdate);
+                System.out.println("Updated hold.");
             }
+            else{
+                System.out.println("Not a valid hold");
+            }
+
+
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("Updated hold.");
+
 
     }
 
