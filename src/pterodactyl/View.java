@@ -1052,11 +1052,6 @@ public class View {
                 " and endDate is null";
         int count = 1;
 
-        String s_queryAddHold = "Insert into holds " +
-                "(PATRONID, DEWEYID, ITEMNUMBER, ENDDATE, POSITION, CREATEDATE)" +
-                " values (" + patronID + ", " + itemDeweyID + ", " + itemNumber + ", " +
-                " null, " + count + ", curDate())";
-
         Statement stmt;
 
         try {
@@ -1072,7 +1067,12 @@ public class View {
                     // Create a new hold for this item
                     res = stmt.executeQuery(s_count);
                     if (res.next() == true)
-                        count = res.getInt(1);
+                        count = res.getInt(1) + 1;
+
+                    String s_queryAddHold = "Insert into holds " +
+                            "(PATRONID, DEWEYID, ITEMNUMBER, ENDDATE, POSITION, CREATEDATE)" +
+                            " values (" + patronID + ", " + itemDeweyID + ", " + itemNumber + ", " +
+                            " null, " + count + ", curDate())";
                     stmt.execute(s_queryAddHold);
                     System.out.println("You have a placed a hold on this item");
                 }
@@ -1149,19 +1149,23 @@ public class View {
             return;
         }
 
-        String s_queryHoldExists = "Select * from holds where userID = " + patronID +  " and DeweyID = " + itemDeweyID
+        String s_queryHoldExists = "Select * from holds where patronID = " + patronID +  " and DeweyID = " + itemDeweyID
                 + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
 
-        String s_queryHoldEnd = "update holds set endDate = curDate() where userID = " + patronID +  " and DeweyID = " + itemDeweyID
+        String s_queryHoldEnd = "update holds set endDate = curDate() where patronID = " + patronID +  " and DeweyID = " + itemDeweyID
                 + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
 
+        String s_queryHoldUpdate = "update holds set position = position - 1 where DeweyID = " + itemDeweyID
+                + " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
         Statement stmt;
         try {
             stmt = conn.createStatement();
             ResultSet res = stmt.executeQuery(s_queryHoldExists);
 
-            if (res.next() == true)
+            if (res.next() == true) {
                 stmt.execute(s_queryHoldEnd);
+                stmt.execute(s_queryHoldUpdate);
+            }
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
