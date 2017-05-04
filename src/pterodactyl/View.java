@@ -382,7 +382,7 @@ public class View {
     }
 
     public void viewOverdueBooks() {
-		/*
+        /*
 		 * our original query didn't work because it was trying to find book name when it wasn't stored in checkout
 		 * we have to merge with checkout and make this a bit more complex
 		 */
@@ -856,79 +856,92 @@ public class View {
      * @param patronID
      */
     public void returnItem(int patronID) {
+        System.out.println("Return an Item");
         int itemDeweyID = 0;
         int itemNumber = 0;
 
-        // get valid input
-        while (itemDeweyID == 0) {
-            try {
-                System.out.println("Please Enter Item Dewey ID (or -1 to cancel):\n");
-                itemDeweyID = Integer.parseInt(reader.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Enter a valid number.");
-            }
-
-            if (itemDeweyID < 0 && itemDeweyID != -1) {
-                System.out.println("Enter a valid number (valid Dewey ID or -1).");
-                itemDeweyID = 0;
-            }
-
-        }
-
-        // did the user quit
-        if (itemDeweyID == -1) {
-            System.out.println("Returning back to the menu.");
-            return;
-        }
-
-        // get valid input
-        while (itemNumber == 0) {
-            try {
-                System.out.println("Please Enter Item Number (or -1 to cancel):\n");
-                itemNumber = Integer.parseInt(reader.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Enter a valid number.");
-            }
-
-            if (itemNumber < 0 && itemNumber != -1) {
-                System.out.println("Enter a valid number (greater than zero or -1).");
-                itemNumber = 0;
-            }
-        }
-
-        // Did the user cancel
-        if (itemNumber == -1) {
-            System.out.println("Returning back to the menu.");
-            return;
-        }
-
-        String s_queryFindACheckOut = "Select endDate, dueDate from checkout where " +
-                "deweyID = " + itemDeweyID +
-                " and itemnumber = " + itemNumber + "and patronID = " + patronID +
-                " and endDate is null";
-
-        String s_queryRemoveCheckout = "Update checkout endDate = curDate() where " +
-                "deweyID = " + itemDeweyID +
-                " and itemnumber = " + itemNumber + "and patronID = " + patronID +
-                " and endDate is null";
-
-        String s_queryExists = "Select * from item where " +
-                "deweyID = " + itemDeweyID +
-                " and itemnumber = " + itemNumber;
-
-        Statement stmt;
-
         try {
+            Statement stmt;
+
             stmt = conn.createStatement();
-            // Does this item exist
-            ResultSet res = stmt.executeQuery(s_queryExists);
+
+            String s_queryItemOut = "Select title, item.deweyID, item.itemnumber, dueDate " +
+                    "from checkout natural join item where patronID = " + patronID +
+                    " and endDate is null";
+            ResultSet res = stmt.executeQuery(s_queryItemOut);
+
+            while (res.next()) {
+                System.out.println("Current Item Out: " + res.getString(1) + "\t" + res.getInt(2)
+                        + "\t" + res.getInt(3) + "\tDue Date: " + res.getString(4));
+
+            }
+
+            // get valid input
+            while (itemDeweyID == 0) {
+                try {
+                    System.out.print("Please Enter Item Dewey ID (or -1 to cancel): ");
+                    itemDeweyID = Integer.parseInt(reader.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a valid number.");
+                }
+
+                if (itemDeweyID < 0 && itemDeweyID != -1) {
+                    System.out.println("Enter a valid number (valid Dewey ID or -1).");
+                    itemDeweyID = 0;
+                }
+
+            }
+
+            // did the user quit
+            if (itemDeweyID == -1) {
+                System.out.println("Returning back to the menu.");
+                return;
+            }
+
+            // get valid input
+            while (itemNumber == 0) {
+                try {
+                    System.out.print("Please Enter Item Number (or -1 to cancel): ");
+                    itemNumber = Integer.parseInt(reader.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a valid number.");
+                }
+
+                if (itemNumber < 0 && itemNumber != -1) {
+                    System.out.println("Enter a valid number (greater than zero or -1).");
+                    itemNumber = 0;
+                }
+            }
+
+            // Did the user cancel
+            if (itemNumber == -1) {
+                System.out.println("Returning back to the menu.");
+                return;
+            }
+
+            String s_queryFindACheckOut = "Select endDate, dueDate from checkout where " +
+                    "deweyID = " + itemDeweyID +
+                    " and itemnumber = " + itemNumber + " and patronID = " + patronID +
+                    " and endDate is null";
+
+            String s_queryRemoveCheckout = "Update checkout set endDate = curDate() where " +
+                    "deweyID = " + itemDeweyID +
+                    " and itemnumber = " + itemNumber + " and patronID = " + patronID +
+                    " and endDate is null";
+
+            String s_queryExists = "Select * from item where " +
+                    "deweyID = " + itemDeweyID +
+                    " and itemnumber = " + itemNumber;
+
+            res = stmt.executeQuery(s_queryExists);
 
             if (res.next() == true) {
                 // Is this currently checked out by the user
                 res = stmt.executeQuery(s_queryFindACheckOut);
                 if (res.next() == true) {
                     // End the checkout
-                    stmt.executeQuery(s_queryRemoveCheckout);
+                    stmt.executeUpdate(s_queryRemoveCheckout);
+                    System.out.println("Item returned.");
 
                 } else
                     System.out.println("This item is not currently checked out by you");
