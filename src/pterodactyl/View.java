@@ -95,13 +95,10 @@ public class View {
 
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
 			System.out.println("ERROR! Database file in use. Concurrent users are not handled.");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.print("Unhandled error");
-			e.printStackTrace();
+		    //Not sure how this would happen
+			System.out.println("Cannot run");
 		}
 
 		System.out.println("Thank you for using our system. Have a nice day");
@@ -177,8 +174,8 @@ public class View {
 
 
 			} catch (SQLException e) {
-				// Should probably do something more here
-				System.out.println("SQL ERROR " + e.toString());
+				// Not sure how this would happen
+				System.out.println("Cannot login");
 			}
 
 
@@ -365,8 +362,7 @@ public class View {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Cannot remove an item");
 		}
 
 
@@ -413,8 +409,7 @@ public class View {
 
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Cannot clear a waitlist");
 		}
 	}
 
@@ -504,7 +499,8 @@ public class View {
 						} catch (NumberFormatException e) {
 							System.out.println("Enter a number.");
 						} catch (SQLException e) {
-							System.out.println("Error with the SQL " + e.toString());
+						    // Not sure how this would happen
+							System.out.println("Cannot edit personal information");
 						}
 
 						break;
@@ -516,7 +512,7 @@ public class View {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Error with the SQL " + e.toString());
+			System.out.println("Cannot edit personal information");
 		}
 
 	}
@@ -550,8 +546,8 @@ public class View {
 
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    // Not sure how this would be caused?
+			System.out.println("Cannot view over due books");
 		}
 
 	}
@@ -579,12 +575,9 @@ public class View {
 				System.out.println("\t" + res.getInt(2) + "\t" + res.getString(1));
 			}
 
-
-
-
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    //Not sure how this would occur
+			System.out.println("Cannot view delinquent patrons");
 		}
 	}
 
@@ -612,8 +605,8 @@ public class View {
 
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    //Not sure how this would happen
+			System.out.println("Cannot find part time librarians");
 		}
 
 	}
@@ -757,7 +750,8 @@ public class View {
 
 			} catch (SQLException e) {
 				// Should probably do something more here
-				System.out.println("SQL ERROR " + e.toString());
+                // not sure how this would happen
+				System.out.println("Cannot login as a Patron");
 			}
 
 
@@ -894,8 +888,7 @@ public class View {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Error with the SQL " + e.toString());
-			//e.printStackTrace();
+			System.out.println("Cannot search for an item");
 		}
 	}
 
@@ -918,12 +911,18 @@ public class View {
 					" and endDate is null";
 			ResultSet res = stmt.executeQuery(s_queryItemOut);
 
+            // Stop the user from renewing an item
+            if (res.next() == false){
+                System.out.println("You have no items currently checked out.");
+                return;
+            }
 
-			while (res.next()) {
+            do {
 				System.out.println("Current Item Out: " + res.getString(1) + "\t" + res.getInt(2)
 						+ "\t" + res.getInt(3) + "\tDue Date: " + res.getString(4));
 
-			}
+			}while (res.next());
+
 
 			do {
 				System.out.println("Enter the dewey ID of the item you want to renew: ");
@@ -1008,7 +1007,7 @@ public class View {
 	 * @param patronID
 	 */
 	public void returnItem(int patronID) {
-		System.out.println("Return an Item");
+
 		int itemDeweyID = 0;
 		int itemNumber = 0;
 
@@ -1022,11 +1021,16 @@ public class View {
 					" and endDate is null";
 			ResultSet res = stmt.executeQuery(s_queryItemOut);
 
-			while (res.next()) {
+			// Stop the user from returning an item
+
+
+            System.out.println("Return an Item");
+
+			do {
 				System.out.println("Current Item Out: " + res.getString(1) + "\t" + res.getInt(2)
 						+ "\t" + res.getInt(3) + "\tDue Date: " + res.getString(4));
 
-			}
+			} while(res.next());
 
 			// get valid input
 			while (itemDeweyID == 0) {
@@ -1401,12 +1405,17 @@ public class View {
 					" and (endDate > curDate() or endDate is null)";
 			ResultSet res = stmt.executeQuery(s_queryActiveHolds);
 
+			// If you have no holds, then you can't remove an holds
+            if (res.next() == false){
+                System.out.println("You have no active holds.");
+                return;
+            }
 
-			while (res.next()) {
+			do {
 				System.out.println("Currently Active Hold: " + res.getString(1) + "\t" + res.getInt(2)
 						+ "\t" + res.getInt(3) + "\tPosition: " + res.getInt(4));
 
-			}
+			} while (res.next());
 
 
 			// get valid input
