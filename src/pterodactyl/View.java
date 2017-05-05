@@ -1467,15 +1467,19 @@ public class View {
 			String s_queryHoldEnd = "update holds set endDate = curDate() where patronID = " + patronID + " and DeweyID = " + itemDeweyID
 					+ " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
 
-			String s_queryHoldUpdate = "update holds set position = position - 1 where DeweyID = " + itemDeweyID
-					+ " and itemNumber = " + itemNumber + " and (endDate > curDate() or endDate is null)";
+			String s_queryHoldUpdate = "UPDATE holds SET position = position - 1 WHERE DeweyID = " + itemDeweyID + " AND itemNumber = " +
+			itemNumber + " (endDate > curDate() or endDate is null) and position > (Select position from holds where " +
+					"patronID = " + patronID + " DeweyID = " + itemDeweyID + " and itemNumber = " + itemNumber +
+					" and (endDate > curDate() or endDate is null))";
+
 
 
 			res = stmt.executeQuery(s_queryHoldExists);
 
 			if (res.next() == true) {
-				stmt.execute(s_queryHoldEnd);
 				stmt.execute(s_queryHoldUpdate);
+				stmt.execute(s_queryHoldEnd);
+
 				System.out.println("Updated hold.");
 			} else {
 				System.out.println("Not a valid hold");
