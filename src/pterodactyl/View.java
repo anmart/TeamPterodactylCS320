@@ -1472,8 +1472,6 @@ public class View {
 					"patronID = " + patronID + " DeweyID = " + itemDeweyID + " and itemNumber = " + itemNumber +
 					" and (endDate > curDate() or endDate is null))";
 
-
-
 			res = stmt.executeQuery(s_queryHoldExists);
 
 			if (res.next() == true) {
