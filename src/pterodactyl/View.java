@@ -956,7 +956,7 @@ public class View {
 			String s_queryFindOtherHolds = "Select * from holds where " +
 					"deweyID = " + inputInt +
 					" and itemnumber = " + itemNumber +
-					" and patronID != " + patronID; //Not sure if patronId check is neccessary
+					" and patronID != " + patronID + " and endDate is null";
 
 			String s_queryUpdateCheckout = "Update checkout set dueDate = DATEADD(week,2,CURRENT_TIMESTAMP) " +
 					"deweyID = " + inputInt +
@@ -1343,7 +1343,6 @@ public class View {
 				" and patronID = " + patronID +
 				" and endDate is null";
 
-		// doesn't work see github
 		String s_count = "Select count(patronID) from holds where " +
 				"deweyID = " + itemDeweyID +
 				" and itemnumber = " + itemNumber +
