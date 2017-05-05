@@ -967,13 +967,36 @@ public class View {
      * @param patronID
      */
     public void checkOutItem(int patronID) {
+        try {
+            String s_queryItemLimit = "Select itemLimit from patron where userID = " + patronID;
+            Statement stmt;
+            int numberOfItems = 0;
+
+
+            stmt = conn.createStatement();
+            ResultSet res = stmt.executeQuery(s_queryItemLimit);
+            int itemLimit = -1;
+            if(res.next())
+                itemLimit = res.getInt(1);
+
+            if (itemLimit == 0)
+                System.out.println("You have an unlimited checkout limit.");
+            else if (itemLimit > 0)
+                System.out.println("Your item limit is " + itemLimit);
+            else {
+                System.out.println("You can't check out items");
+                return;
+                // This should never happen
+            }
+
+
         int itemDeweyID = 0;
         int itemNumber = 0;
 
         // get valid input
         while (itemDeweyID == 0) {
             try {
-                System.out.println("Please Enter Item Dewey ID (or -1 to cancel):\n");
+                System.out.print("Please Enter Item Dewey ID (or -1 to cancel): ");
                 itemDeweyID = Integer.parseInt(reader.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Enter a valid number.");
@@ -995,7 +1018,7 @@ public class View {
         // get valid input
         while (itemNumber == 0) {
             try {
-                System.out.println("Please Enter Item Number (or -1 to cancel):\n");
+                System.out.print("Please Enter Item Number (or -1 to cancel): ");
                 itemNumber = Integer.parseInt(reader.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Enter a valid number.");
@@ -1045,34 +1068,40 @@ public class View {
                 " and patronID = " + patronID +
                 " and endDate is null";
 
-        String s_queryItemLimit = "Select itemLimit from patron where userID = " + patronID;
-        Statement stmt;
-        int numberOfItems = 0;
 
-        try {
+
+
             stmt = conn.createStatement();
-            ResultSet res = stmt.executeQuery(s_queryExists);
+            res = stmt.executeQuery(s_queryExists);
 
+            // Does the item exist?
             if (res.next() == true) {
                 res = stmt.executeQuery(s_queryFindACheckOut);
+
+                // Is this item currently checked out?
                 if (res.next() == false) {
+
+                    //How many items do you have out?
                     res = stmt.executeQuery(s_queryFindNumberItems);
                     if (res.next())
                         numberOfItems = res.getInt(1);
-                    else
-                        System.err.println("1 error");
-                    res = stmt.executeQuery(s_queryItemLimit);
-                    res.next();
-                    if (numberOfItems < res.getInt(1)) {
+
+
+
+                    // Is the number of Items out < limit or limit == 0?
+                    if ((numberOfItems < itemLimit) || itemLimit == 0) {
                         res = stmt.executeQuery(s_queryFindOtherHolds);
-                        if (res.next() == false)
+                        if (res.next() == false) {
                             stmt.execute(s_queryUpdateCheckout);
+                            System.out.println("Item checked out");
+                        }
                         else {
                             // check that the first hold is the patron
                             if (res.getInt(2) == patronID) {
                                 stmt.execute(s_queryUpdateCheckout); // Check out book
                                 stmt.execute(s_queryRemoveHold); // End the current hold
                                 stmt.execute(s_queryChangeHolds); // Change other positions
+                                System.out.println("Item checked out");
                             } else {
                                 System.out.println("Someone else has a hold on this book.");
                             }
@@ -1087,8 +1116,9 @@ public class View {
                 System.out.println("This item doesn't exist.");
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // This happens when the SQL fails, which means the user tried to checkout a book more than once per day.
+            System.out.println("You have already checked out this item already today.");
+            System.out.println("There is a limit of one check out per book per day.");
         }
 
 
