@@ -30,8 +30,7 @@ public class View {
 			// If it doesn't connect at all, then just exit the program
 
 			boolean session;
-
-			String url = "jdbc:h2:~\\Documents\\GitHub\\database\\TeamPterodactylCS320\\test";
+            String url = "jdbc:h2:./db/proj";
 			Class.forName("org.h2.Driver");
 			conn = DriverManager.getConnection(url,
 					"sa",
@@ -751,6 +750,7 @@ public class View {
 			} catch (SQLException e) {
 				// Should probably do something more here
                 // not sure how this would happen
+                System.out.println(e.toString());
 				System.out.println("Cannot login as a Patron");
 			}
 
