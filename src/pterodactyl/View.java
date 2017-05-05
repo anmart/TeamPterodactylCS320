@@ -402,9 +402,6 @@ public class View {
             // TODO Auto-generated catch block
             //e.printStackTrace();
             System.out.println("ERROR! Database file in use. Concurrent users are not handled.");
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             System.out.print("Unhandled error");
@@ -2063,8 +2060,7 @@ public class View {
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Cannot renew.");
         }
 
 
@@ -2171,8 +2167,7 @@ public class View {
                 System.out.println("This item doesn't exist.");
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Cannot return this item.");
         }
 
 
@@ -2445,8 +2440,7 @@ public class View {
                 System.out.println("This item doesn't exist.");
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("You can only create one hold per item per day.");
         }
 
 
@@ -2545,8 +2539,7 @@ public class View {
 
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Cannot update hold.");
         }
 
 
