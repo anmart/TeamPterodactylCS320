@@ -20,17 +20,60 @@ Originally, if you put the database files in the db folder, so the url is jdbc:h
 
 
 #### A small list of data for easy testing:
-Patrons:
+Data:
+Patron:
+ID: 881166	PIN: 5691       NAME: Jesse Duncan      ITEM LIMIT: 5
+
+
+Book:
+Title:          Does Dinosaur Sometimes Make You Feel Stupid?	
+Genre:          Fable	
+DeweyID:        931297	
+Item Number:    8	
+Year:           2004	
+Author:         Morse Honorato
+
+Title:          The Truth Is You Are Not The Only Person Concerned About Dinosaur	
+Genre:          Poetry	
+DeweyID:        329166	
+Item Number:    4	
+Year:           1997	
+Author:         Calhoun Allen
+
+Title:          The Death Of Dinosaur And How To Avoid It	
+Genre:          Poetry	
+DeweyID:        928122	
+Item Number:    6	
+Year:           2002	
+Author:         Sloan Quail
+
+Title:          How To Learn Dinosaur	
+Genre:          Poetry	
+DeweyID:        850821	
+Item Number:    7	
+Year:           2009	
+Author:         Sloan Quail
+
+Title:          10 Tips That Will Make You Influential In Dinosaur	
+Genre:          Poetry	
+DeweyID:        488095	
+Item Number:    9	
+Year:           1990	
+Author:         Sloan Quail
+
+Title:          I Don't Want To Spend This Much Time On Dinosaur. How About You?	
+Genre:          Poetry	
+DeweyID:        409164	
+Item Number:    6	
+Year:           2011	
+Author:         Sloan Quail
+
 
 Holds:
 Checkout:
 
 Librarians:
 
-Holds:
-Checkout:
-
-Books:
 DVDs:
 
 #### How to Run H2 Database:
