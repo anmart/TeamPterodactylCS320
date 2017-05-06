@@ -483,6 +483,7 @@ public class View {
 						} else {
 							String s_updateName = "Update user set name = \'" + newInfo + "\' where ID = " + userID;
 							stmt.execute(s_updateName);
+							System.out.println("Name changed.");
 						}
 						break;
 					case 2:
@@ -503,6 +504,7 @@ public class View {
 
 							String s_updatePIN = "Update user set PIN = " + input + " where ID = " + userID;
 							stmt.execute(s_updatePIN);
+							System.out.println("PIN changed.");
 
 
 						} catch (NumberFormatException e) {
@@ -941,8 +943,8 @@ public class View {
 
 			System.out.println(line + "|\t\t\t\tCurrently Checked Out Items\n" + line);
             do {
-				System.out.println("Current Item Out: " + res.getString(1) + "\t" + res.getInt(2)
-						+ "\t" + res.getInt(3) + "\tDue Date: " + res.getString(4));
+				System.out.println(res.getString(1) + "\tDDID:" + res.getInt(2)
+						+ "\tIN:" + res.getInt(3) + "\nDue Date: " + res.getString(4));
 
 			}while (res.next());
 
