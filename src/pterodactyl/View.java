@@ -20,6 +20,7 @@ public class View {
 
 	Scanner reader;
 	Connection conn;
+	String line = "----------------------------------------------------------------------\n";
 
 	public View() {
 		reader = new Scanner(System.in);
@@ -35,11 +36,13 @@ public class View {
 			conn = DriverManager.getConnection(url,
 					"sa",
 					"");
+			System.out.println(line + "|\t\t\t\tLibrary Catalog and User Service System\t\t\t\t|\n" + line);
 
 			int inputInt = 0;
 
 			// Added error checking for when the user doesn't enter a number
 			do {
+
 				System.out.println("Log in as:\n"
 						+ "\t1. Librarian\n"
 						+ "\t2. Patron\n"
@@ -58,6 +61,7 @@ public class View {
 			int login;
 			switch (inputInt) {
 				case 1:
+					System.out.println(line + "|\t\t\t\tLibrarian Login\n" + line);
 
 					// Keep looping till login successful or user quits
 					do {
@@ -75,6 +79,8 @@ public class View {
 					break;
 				case 2:
 					// Keep looping till login successful or user quits
+					System.out.println(line + "|\t\t\t\tPatron Login\n" + line);
+
 					do {
 						// Login is either  0 - Not Found
 						//                  -1 - Cancel
@@ -198,6 +204,8 @@ public class View {
 
 		// This shouldn't quit after the user enters a bad number
 		int inputInt = 0;
+		System.out.println(line + "|\t\t\t\tLibrarian User Service System\t\t\t\t|\n" + line);
+
 		do {
 			// Added error checking for when the user doesn't enter a number
 
@@ -419,6 +427,8 @@ public class View {
 	 * @param userID
 	 */
 	public void editPersonalInformation(int userID) {
+		System.out.println(line + "|\t\t\t\tPersonal Information Edit\t\t\t\t|\n" + line);
+
 		int inputInt = 0;
 		boolean valid = false;
 
@@ -521,6 +531,8 @@ public class View {
 	 */
 	public void viewOverdueBooks(){
 
+		System.out.println(line + "|\t\t\t\tOverdue Books\t\t\t\t|\n" + line);
+
 		String s_createView = "Create Or Replace view overdue_books "
 				+ " as select title, item.deweyid, item.itemnumber "
 				+ "From checkout inner join item on item.deweyid = checkout.deweyid and item.itemnumber = checkout.itemnumber"
@@ -556,6 +568,7 @@ public class View {
 	 *
 	 */
 	public void viewDelinquentPatrons(){
+		System.out.println(line + "|\t\t\t\tDelinquent Patrons\t\t\t\t|\n" + line);
 
 
 		String s_queryView = "select name, ID " +
@@ -584,6 +597,8 @@ public class View {
 	 * lists names and hours of every librarian that works part time
 	 */
 	public void findPartTimeLibrarians(){
+		System.out.println(line + "|\t\t\t\tPart Time Librarians\t\t\t\t|\n" + line);
+
 		// Get the name and hours per week of part time Librarians
 		String s_queryLibrarians = "Select name, hoursPerWeek from librarian inner join user on userid = id " +
 				"" +
@@ -619,6 +634,8 @@ public class View {
 	 */
 
 	public boolean PatronOptions(int patronID) {
+
+		System.out.println(line + "|\t\t\t\tPatron User Service System\t\t\t\t|\n" + line);
 
 		int inputInt;
 		System.out.println("Welcome to Team Pterosaur's Library System.");
@@ -771,6 +788,8 @@ public class View {
 	 * Will output the search results
 	 */
 	public void searchForItems() {
+		System.out.println(line + "|\t\t\t\tLibrary Catalog\n" + line);
+
 		int inputInt = 0;
 		boolean valid = false;
 
@@ -866,11 +885,14 @@ public class View {
 			ResultSet res = stmt.executeQuery(s_queryItems);
 
 			int columnNumber;
+			System.out.println(line + "|\t\t\t\tResults\n" + line);
+
 			if (res.next() == false)
 				System.out.println("No items found.");
 			else {
+
+
 				columnNumber = res.getMetaData().getColumnCount();
-				//System.out.print(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
 				System.out.print(res.getRow() + ". \t");
 				for (int i = 1; i <= columnNumber; i++) {
 					System.out.print(res.getString(i) + "\t");
@@ -878,7 +900,6 @@ public class View {
 				System.out.print("\n");
 
 				while (res.next()) {
-					//System.out.println(res.getRow() + ". \t" + res.getInt(1) + "\t" + res.getInt(2) + "\t" + res.getString(3));
 					System.out.print(res.getRow() + ". \t");
 					for (int i = 1; i <= columnNumber; i++) {
 						System.out.print(res.getString(i) + "\t");
@@ -899,6 +920,7 @@ public class View {
 	 * @param patronID
 	 */
 	public void renewItem(int patronID) {
+		System.out.println(line + "|\t\t\t\tRenew Items\n" + line);
 		int inputInt = 0;
 		int itemNumber = 0;
 		try {
@@ -917,6 +939,7 @@ public class View {
                 return;
             }
 
+			System.out.println(line + "|\t\t\t\tCurrently Checked Out Items\n" + line);
             do {
 				System.out.println("Current Item Out: " + res.getString(1) + "\t" + res.getInt(2)
 						+ "\t" + res.getInt(3) + "\tDue Date: " + res.getString(4));
@@ -1023,9 +1046,14 @@ public class View {
 
 			// Stop the user from returning an item
 
+			System.out.println(line + "|\t\t\t\tReturn an Item\n" + line);
 
-            System.out.println("Return an Item");
-
+            if (res.next() == false)
+			{
+				System.out.println("You have no items to return.");
+				return;
+			}
+			System.out.println(line + "|\t\t\t\tCurrently Checked Out Items\n" + line);
 			do {
 				System.out.println("Current Item Out: " + res.getString(1) + "\t" + res.getInt(2)
 						+ "\t" + res.getInt(3) + "\tDue Date: " + res.getString(4));
@@ -1123,6 +1151,8 @@ public class View {
 	 */
 	public void checkOutItem(int patronID) {
 		try {
+			System.out.println(line + "|\t\t\t\tCheck Out an Item\n" + line);
+
 			String s_queryItemLimit = "Select itemLimit from patron where userID = " + patronID;
 			Statement stmt;
 			int numberOfItems = 0;
@@ -1212,7 +1242,7 @@ public class View {
 			String s_queryUpdateCheckout = "Insert into checkout " +
 					"(PATRONID, DEWEYID, ITEMNUMBER, BEGINNINGDATE, ENDDATE, DUEDATE) " +
 					"values (" + patronID + ", " + itemDeweyID + ", " + itemNumber + ", " +
-					"curDate(), null, DATEADD(week ,2 ,CURRENT_TIMESTAMP))";
+					"CURRENT_TIMESTAMP(), null, DATEADD(week ,2 ,CURRENT_TIMESTAMP))";
 			String s_queryChangeHolds = "Update holds set position = position - 1 where " +
 					"deweyID = " + itemDeweyID +
 					" and itemnumber = " + itemNumber +
@@ -1271,9 +1301,8 @@ public class View {
 				System.out.println("This item doesn't exist.");
 
 		} catch (SQLException e) {
-			// This happens when the SQL fails, which means the user tried to checkout a book more than once per day.
-			System.out.println("You have already checked out this item already today.");
-			System.out.println("There is a limit of one check out per book per day.");
+			// This happens when the SQL fails
+			System.out.println("Unable to check out item");
 		}
 
 
@@ -1287,6 +1316,8 @@ public class View {
 	 */
 
 	public void placeHoldOnItem(int patronID) {
+		System.out.println(line + "|\t\t\t\tPlace Hold on Item\n" + line);
+
 		int itemDeweyID = 0;
 		int itemNumber = 0;
 
@@ -1391,6 +1422,7 @@ public class View {
 	 * @param patronID patron's user id
 	 */
 	public void removeHoldOnItem(int patronID) {
+		System.out.println(line + "|\t\t\t\tRemove Hold on Item\n" + line);
 		int itemDeweyID = 0;
 		int itemNumber = 0;
 
@@ -1410,6 +1442,7 @@ public class View {
                 return;
             }
 
+			System.out.println(line + "|\t\t\t\tCurrently Active Holds\n" + line);
 			do {
 				System.out.println("Currently Active Hold: " + res.getString(1) + "\t" + res.getInt(2)
 						+ "\t" + res.getInt(3) + "\tPosition: " + res.getInt(4));
