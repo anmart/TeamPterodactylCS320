@@ -52,9 +52,16 @@ public class View {
 
 				try {
 					inputInt = Integer.parseInt(reader.nextLine());
+
+					if (inputInt < 0 || inputInt > 3) {
+						inputInt = 0;
+						System.out.println("Enter a valid choice.");
+					}
 				} catch (NumberFormatException e) {
 					System.out.println("Enter a number.");
 				}
+
+
 			} while (inputInt == 0);
 
 			// Need to implement login with ID after selecting what type of user you are
@@ -103,7 +110,7 @@ public class View {
 			System.out.println("ERROR! Database file in use. Concurrent users are not handled.");
 		} catch (Exception e) {
 		    //Not sure how this would happen
-			System.out.println("Cannot run");
+			System.out.println("Cannot run " + e.toString());
 		}
 
 		System.out.println("Thank you for using our system. Have a nice day");
@@ -217,7 +224,8 @@ public class View {
 					+ "\t5. Find Overdue Books\n"
 					+ "\t6. Find Delinquent Patrons\n"
 					+ "\t7. Find Part Time Librarians\n"
-					+ "\t8. Quit");
+					+ "\t8. Search for an item\n"
+					+ "\t9. Quit");
 
 			while (inputInt == 0) {
 				System.out.print("Enter Your Response: ");
@@ -254,6 +262,9 @@ public class View {
 					findPartTimeLibrarians();
 					break;
 				case 8:
+					searchForItems();
+					break;
+				case 9:
 					return false;
 				default:
 					System.out.println("Not a valid choice.");
@@ -262,7 +273,7 @@ public class View {
 
 			}
 
-		} while (inputInt > 0 && inputInt <= 8);
+		} while (inputInt > 0 && inputInt <= 9);
 
 		return true;
 	}
@@ -278,7 +289,7 @@ public class View {
 					+ "\t1) Book\n"
 					+ "\t2) DVD\n"
 					+ "\t3) Quit");
-			int choiceNum = reader.nextInt();
+			int choiceNum = reader.nextInt(); reader.nextLine();
 			if(choiceNum >= 3){
 				System.out.println("Quitting.");
 				return;
@@ -872,11 +883,9 @@ public class View {
 				break;
 			case 3:
 				whereClause = "where year like \'";
-				column = ", year";
 				break;
 			case 4:
 				whereClause = "where genre like \'";
-				column = ", genre ";
 				break;
 			case 5:
 				whereClause = "where deweyID like \'";
@@ -885,7 +894,7 @@ public class View {
 				whereClause = "where title like \'";
 				break;
 		}
-		String s_queryItems = "Select item.deweyID, item.ItemNumber, title" + column + " from item " + whereClause + titleQuery +
+		String s_queryItems = "Select item.deweyID, item.ItemNumber, title, genre, year" + column + " from item " + whereClause + titleQuery +
 				"\' group by item.deweyID";
 		// group by will make sure the same books will stick together
 		// it'd be really weird if Book A copy 1 and Book A copy 2 were far apart
