@@ -202,12 +202,12 @@ public class View {
 
 	public boolean LibrarianOptions(int librarianID) {
 
-		// This shouldn't quit after the user enters a bad number
-		int inputInt = 0;
-		System.out.println(line + "|\t\t\t\tLibrarian User Service System\t\t\t\t|\n" + line);
+		int inputInt;
+
 
 		do {
-			// Added error checking for when the user doesn't enter a number
+		    inputInt = 0; // reset to 0 to read the next input
+            System.out.println(line + "|\t\t\t\tLibrarian User Service System\t\t\t\t\n" + line);
 
 			System.out.println("Welcome to Team Pterosaur's Library System. What would you like to do?\n\n"
 					+ "\t1. Add Item\n"
@@ -256,10 +256,12 @@ public class View {
 				case 8:
 					return false;
 				default:
-					System.out.println("Not a valid choice. Quitting. \t Thank you for using the system.");
-					return false;
+					System.out.println("Not a valid choice.");
+                    inputInt = 1; // reset to 1 to keep the while loop going
+
 
 			}
+
 		} while (inputInt > 0 && inputInt <= 8);
 
 		return true;
@@ -270,6 +272,7 @@ public class View {
 	 * Adds a specified item into the database
 	 */
 	public void addItem(){
+        System.out.println(line + "|\t\t\t\tAdd an Item\t\t\t\t\n" + line);
 		try{//using a massive try since we have to enter so many numbers throughout this function
 			System.out.println("What would you like to add?\n"
 					+ "\t1) Book\n"
@@ -338,7 +341,7 @@ public class View {
 	 *
 	 */
 	public void removeItem(){
-
+        System.out.println(line + "|\t\t\t\tRemove an Item\t\t\t\t\n" + line);
 		System.out.println("Please enter Dewey ID");
 		int dewey, itemNumber;
 		try{
@@ -384,6 +387,7 @@ public class View {
 	 *
 	 */
 	public void clearWaitlists(){
+        System.out.println(line + "|\t\t\t\tClear Waitlists\t\t\t\t\n" + line);
 		System.out.println("Please enter Dewey ID");
 		int dewey, itemNumber;
 		try{
@@ -479,7 +483,7 @@ public class View {
 				switch (inputInt) {
 					case 1:
 						System.out.println("Your current name is " + res.getString(1));
-						System.out.print("What would you like to change your name to?");
+						System.out.print("What would you like to change your name to? ");
 						newInfo = reader.nextLine();
 
 						if (newInfo.equalsIgnoreCase("")) {
@@ -642,11 +646,12 @@ public class View {
 
 	public boolean PatronOptions(int patronID) {
 
-		System.out.println(line + "|\t\t\t\tPatron User Service System\t\t\t\t|\n" + line);
+
 
 		int inputInt;
 		System.out.println("Welcome to Team Pterosaur's Library System.");
 		do {
+            System.out.println(line + "|\t\t\t\tPatron User Service System\t\t\t\t|\n" + line);
 			//reset the input int
 			inputInt = 0;
 			System.out.println("What would you like to do now?\n\n"
@@ -1037,7 +1042,6 @@ public class View {
 	 * @param patronID
 	 */
 	public void returnItem(int patronID) {
-
 		int itemDeweyID = 0;
 		int itemNumber = 0;
 
@@ -1331,7 +1335,7 @@ public class View {
 		// get valid input
 		while (itemDeweyID == 0) {
 			try {
-				System.out.print("Please Enter Item Dewey ID (or -1 to cancel):");
+				System.out.print("Please Enter Item Dewey ID (or -1 to cancel): ");
 				itemDeweyID = Integer.parseInt(reader.nextLine());
 			} catch (NumberFormatException e) {
 				System.out.println("Enter a valid number.");
@@ -1353,7 +1357,7 @@ public class View {
 		// get valid input
 		while (itemNumber == 0) {
 			try {
-				System.out.print("Please Enter Item Number (or -1 to cancel):");
+				System.out.print("Please Enter Item Number (or -1 to cancel): ");
 				itemNumber = Integer.parseInt(reader.nextLine());
 			} catch (NumberFormatException e) {
 				System.out.println("Enter a valid number.");
@@ -1460,7 +1464,7 @@ public class View {
 			// get valid input
 			while (itemDeweyID == 0) {
 				try {
-					System.out.print("Please Enter Item Dewey ID (or -1 to cancel):");
+					System.out.print("Please Enter Item Dewey ID (or -1 to cancel): ");
 					itemDeweyID = Integer.parseInt(reader.nextLine());
 				} catch (NumberFormatException e) {
 					System.out.println("Enter a valid number.");
