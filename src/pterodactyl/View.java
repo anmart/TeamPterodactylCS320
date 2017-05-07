@@ -216,7 +216,8 @@ public class View {
 					+ "\t4. Edit Personal Information\n"
 					+ "\t5. Find Overdue Books\n"
 					+ "\t6. Find Delinquent Patrons\n"
-					+ "\t7. Find Part Time Librarians");
+					+ "\t7. Find Part Time Librarians\n"
+					+ "\t8. Quit");
 
 			while (inputInt == 0) {
 				System.out.print("Enter Your Response: ");
@@ -252,12 +253,14 @@ public class View {
 				case 7:
 					findPartTimeLibrarians();
 					break;
+				case 8:
+					return false;
 				default:
 					System.out.println("Not a valid choice. Quitting. \t Thank you for using the system.");
 					return false;
 
 			}
-		} while (inputInt > 0 && inputInt <= 7);
+		} while (inputInt > 0 && inputInt <= 8);
 
 		return true;
 	}
@@ -455,6 +458,7 @@ public class View {
 			if (inputInt > 3 || inputInt < 1) {
 				System.out.println("Enter a valid choice.");
 				inputInt = 0;
+				valid = false;
 			}
 
 		} while (inputInt == 0);
@@ -545,6 +549,7 @@ public class View {
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
+			stmt.execute("drop view overdue_books");
 			stmt.execute(s_createView);
 			ResultSet res = stmt.executeQuery(s_queryView);
 			boolean itemFound = false;
