@@ -25,6 +25,10 @@ Patron:
 ID: 881166	PIN: 5691       NAME: Jesse Duncan      ITEM LIMIT: 5
 
 
+Librarians:
+ID: 130478	PIN: 4582       NAME: Jonathan Fisher
+
+
 Book:
 Title:          Does Dinosaur Sometimes Make You Feel Stupid?	
 Genre:          Fable	
@@ -69,12 +73,48 @@ Year:           2011
 Author:         Sloan Quail
 
 
-Holds:
-Checkout:
-
-Librarians:
-
 DVDs:
+Title:          Can You Really Find Dinosaur (on the Web)?
+Genre:          Science Fiction
+DeweyID:        917062
+Item Number:    4
+Year:           1995
+Director:       James Mark
+
+Title:          5 Ways To Get Through To Your Dinosaur
+Genre:          Science Fiction
+DeweyID:        955084
+Item Number:    9
+Year:           2012
+Director:       Valencia Sheila
+
+Title:          What Can You Do To Save Your Dinosaur From Destruction By Social Media?
+Genre:          Science Fiction
+DeweyID:        113826
+Item Number:    5
+Year:           1998
+Director:       Sanchez Boris
+
+Title:          The Quickest & Easiest Way To Dinosaur
+Genre:          Science Fiction
+DeweyID:        235027
+Item Number:    1
+Year:           2011
+Director:       Murphy Britanni
+
+Title:          Top 10 Tips With Dinosaur
+Genre:          Mystery
+DeweyID:        141198
+Item Number:    4
+Year:           1995
+Director:       Gallegos Hannah
+
+Title:          Apply These 5 Secret Techniques To Improve Dinosaur
+Genre:          Mystery
+DeweyID:        415830
+Item Number:    9
+Year:           1994
+Director:       Dalton Uma
 
 #### How to Run H2 Database:
 
